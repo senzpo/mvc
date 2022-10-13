@@ -6,14 +6,19 @@ class Application
 
   end
   def initialize
-    @router = ApplicationRouter.new
+    @router = RegexpRouter.new(File.join(File.dirname(__FILE__), 'app', 'config', 'routes.rb'))
+
+
   end
 
   def call(env)
-    result = @router.resolve(path, method)
-    if result.controller && result.action
-      controller = eval(result.controller).new(env)
-      controller.resolve(action)
+    request = Rack::Request.new(env)
+    # binding.pry
+    result = @router.resolve(request.path, request.request_method.downcase)
+
+    if result
+      controller = result.controller.new(env)
+      controller.resolve(result.action)
     else
       raise NotFoundError
     end
