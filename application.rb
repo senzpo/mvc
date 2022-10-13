@@ -5,12 +5,15 @@ class Application
   class NotFoundError < StandardError;
 
   end
-  def initialize
-    @router = ApplicationRouter.new
+  def initialize(&block)
+    p &block
+    @router = ApplicationRouter.new(&block)
   end
 
   def call(env)
-    result = @router.resolve(path, method)
+    request = Rack::Request.new(env)
+    result = @router.resolve(request.path, request.method)
+    
     if result.controller && result.action
       controller = eval(result.controller).new(env)
       controller.resolve(action)
