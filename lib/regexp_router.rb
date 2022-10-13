@@ -12,7 +12,40 @@ class RegexpRouter
     end
 
     def matched?(path, http_method)
-      method.to_s == http_method.to_s && Regexp.new(pattern).match?(path)
+      return false unless method.to_s == http_method.to_s
+
+      pattern_split = pattern.split('/')
+      path_split = path.split('/')
+
+      return false if pattern_split.length != path_split.length
+
+      matched = true
+
+      pattern_split.each_with_index do |e, index|
+        next if e.start_with?(':')
+        if e != path_split[index]
+          matched = false
+          break
+        end
+      end
+
+      matched
+    end
+
+    def params(path)
+      pattern_split = pattern.split('/')
+      path_split = path.split('/')
+
+      result = {}
+
+      pattern_split.each_with_index do |e, index|
+        if e.start_with?(':')
+          key = e.delete(':').to_sym
+          result[key] = path_split[index]
+        end
+      end
+
+      result
     end
   end
 
@@ -33,7 +66,7 @@ class RegexpRouter
     end
 
     def params
-
+      route.params(path)
     end
   end
 
@@ -45,14 +78,11 @@ class RegexpRouter
   end
 
   def resolve(path, method)
-    route = routes.find { |route| route.matched?(path, method)}
+    route = routes.find { |route| route.matched?(path, method.downcase)}
+
     if route
       return Result.new(route, path)
     end
-    # /\/\:(\w*)/.match "/users/:id/tags/:tag_id"
-    # if route
-    # 2.7.4 :088 > "/users/:id/tags/:tag_id".scan(/\/\:(\w*)/).flatten
-    # => ["id", "tag_id"]
   end
 
   private

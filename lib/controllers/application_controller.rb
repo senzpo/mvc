@@ -1,9 +1,10 @@
 class ApplicationController
   attr_accessor :env
-  attr_reader :action
+  attr_reader :action, :params
 
-  def initialize(env)
+  def initialize(env, params)
     @env = env
+    @params = params
   end
 
   def resolve(action)

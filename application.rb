@@ -13,28 +13,14 @@ class Application
 
   def call(env)
     request = Rack::Request.new(env)
-    # binding.pry
-    result = @router.resolve(request.path, request.request_method.downcase)
+
+    result = @router.resolve(request.path, request.request_method)
 
     if result
-      controller = result.controller.new(env)
+      controller = result.controller.new(env, result.params)
       controller.resolve(result.action)
     else
       raise NotFoundError
     end
-    # ApplicationRouter::Result
-    # :controller, :action
-    # # path
-    # # method
-    # # result = Rack::Request.new(@env)
-    #
-    # # result.path
-    # # @env[:controller] = UsersController
-    #
-    # controller_class = 'UsersController'
-    # action = 'index'
-
-    # controller = eval(controller_class).new(env)
-    # controller.resolve(action)
   end
 end

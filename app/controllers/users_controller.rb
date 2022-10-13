@@ -9,6 +9,8 @@ class UsersController < ApplicationController
   end
 
   def show
+    @id = params[:id]
+    @tag_id = params[:tag_id]
     render code: 201
   end
 end
