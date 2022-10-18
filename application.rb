@@ -2,13 +2,14 @@ Dir[File.join(File.dirname(__FILE__), 'lib', '**', '*.rb')].each {|file| require
 Dir[File.join(File.dirname(__FILE__), 'app', '**','*.rb')].each {|file| require file }
 
 class Application
-  class NotFoundError < StandardError;
+  class NotFoundError < StandardError; end
 
+  def self.db
+    @@db ||= Sequel.connect('sqlite://blog.db')
   end
+
   def initialize
     @router = RegexpRouter.new(File.join(File.dirname(__FILE__), 'app', 'config', 'routes.rb'))
-
-
   end
 
   def call(env)
