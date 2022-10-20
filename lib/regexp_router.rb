@@ -58,7 +58,7 @@ class RegexpRouter
     end
 
     def controller
-      eval "#{route.controller.capitalize}Controller"
+      eval "#{route.controller}Controller"
     end
 
     def action
@@ -98,7 +98,9 @@ class RegexpRouter
   end
 
   def register_route(method, pattern, options)
-    controller, action = options[:to].split('#')
+    path_pieces = options[:to].split('#')
+    controller = path_pieces.slice(0..-2).map { |s| s.capitalize }.join('::')
+    action = path_pieces.last
     @routes << Route.new(controller: controller, action: action, pattern: pattern, method: method)
   end
 end
