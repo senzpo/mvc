@@ -5,11 +5,12 @@ class ApplicationController
   DEFAULT_HTTP_CODE = 200
 
   attr_accessor :env
-  attr_reader :action, :params
+  attr_reader :action, :params, :request
 
-  def initialize(env, params)
+  def initialize(env, params, request)
     @env = env
     @params = params
+    @request = request
   end
 
   def resolve(action)
