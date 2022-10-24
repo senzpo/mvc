@@ -1,16 +1,16 @@
 class UsersController < ApplicationController
   def index
     @items = []
-    render code: 201
+    render code: 200
   end
 
   def new
-    render code: 302, headers: {'Location' => '/login'}, no_content: true
+    render head: 302, headers: {'Location' => '/login'}
   end
 
   def show
     @id = params[:id]
     @tag_id = params[:tag_id]
-    render code: 201
+    render code: 200
   end
 end

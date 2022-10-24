@@ -5,6 +5,6 @@ Bundler.require
 
 require './application'
 
-use Rack::Reloader
+use Rack::Reloader, 0
 
 run Application.new
