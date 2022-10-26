@@ -12,12 +12,12 @@ namespace :db do
   # http://sequel.jeremyevans.net/documentation.html
   desc "Create database"
   task :create do
-    puts 'Hello from some task'
+    SQLite3::Database.open(Application.db_config['development']['db']['name'])
   end
 
   desc "Drop database"
   task :drop do
-    puts 'Hello from some task'
+    File.delete(Application.db_config['development']['db']['name'])
   end
 
   desc "Migrate database"

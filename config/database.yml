@@ -1,3 +1,4 @@
 development:
   db:
+    name: 'blog.db'
     connection_line: 'sqlite://blog.db'
