@@ -1,3 +1,5 @@
+require 'yaml'
+
 Dir[File.join(File.dirname(__FILE__), 'lib', '**', '*.rb')].each {|file| require file }
 Dir[File.join(File.dirname(__FILE__), 'app', '**','*.rb')].each {|file| require file }
 
@@ -5,7 +7,11 @@ class Application
   class NotFoundError < StandardError; end
 
   def self.db
-    @@db ||= Sequel.connect('sqlite://blog.db')
+    @@db ||= Sequel.connect(self.db_config['development']['db']['connection_line'])
+  end
+
+  def self.db_config
+    @@db_config ||= YAML.load_file('config/database.yml')
   end
 
   def initialize

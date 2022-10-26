@@ -1,0 +1,3 @@
+development:
+  db:
+    connection_line: 'sqlite://blog.db'
