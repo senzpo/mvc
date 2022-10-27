@@ -6,9 +6,14 @@ html
     meta name="author"
     link rel="icon" type="image/png"
   / javascript:
-  //    alert('Slim supports embedded javascript!')
+  //  alert('Slim supports embedded javascript!')
 
   body
+    nav
+      ul
+        li: a href="/users" Users
+        li: a href="/users/new" New user
+
     == yield
 
     div id="footer"

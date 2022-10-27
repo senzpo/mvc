@@ -1,23 +1,39 @@
 module Web
   class UsersController < ApplicationController
     def index
-      @items = []
-      render
+      users = Application.db[:users].all
+
+      render locals: {users: users}
     end
 
     def new
       render
     end
 
+    def update
+      user = Application.db[:users].where(id: params[:id]).first
+      params = user.merge(request.params.transform_keys(&:to_sym))
+      Application.db[:users].where(id: params[:id]).update(params)
+
+      render head: 302, headers: {'Location' => "/users/#{params[:id]}"}
+    end
+
     def create
-      request.params
+      Application.db[:users].insert(request.params)
+
       render head: 302, headers: {'Location' => '/users'}
     end
 
-    def show
-      @id = params[:id]
+    def edit
+      user = Application.db[:users].where(id: params[:id]).first
 
-      render
+      render locals: {user: user}
+    end
+
+    def show
+      user = Application.db[:users].where(id: params[:id]).first
+
+      render locals: {user: user}
     end
   end
 end

@@ -1,3 +1,9 @@
 h1 Show page
 
-h2 Render User.#{@id}
+dl
+  dt id
+  dd = self[:user][:id]
+  dt name
+  dd = self[:user][:name]
+  dt email
+  dd = self[:user][:email]
