@@ -22,11 +22,14 @@ namespace :db do
 
   desc "Migrate database"
   task :migrate do
-    puts 'Hello from some task'
+    Sequel.extension :migration
+    Sequel::Migrator.run(Application.db, "db/migrations")
   end
 
   desc "Rollback database"
   task :rollback do
-    puts 'Hello from some task'
+    Sequel.extension :migration
+    steps = ENV['STEPS'].to_i || 1
+    Sequel::Migrator.run(Application.db, "db/migrations", relative: steps * (-1))
   end
 end
