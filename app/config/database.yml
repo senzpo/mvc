@@ -1,0 +1,6 @@
+development:
+  db:
+    connection_line: 'sqlite://blog.db'
+production:
+  db:
+    connection_line: 'postgres//realhost:987/user@pass'
