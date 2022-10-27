@@ -1,10 +1,16 @@
-class ApplicationController
-  attr_accessor :env
-  attr_reader :action, :params
+require 'slim/include'
 
-  def initialize(env, params)
+class ApplicationController
+  DEFAULT_LAYOUT = './app/views/application_layout.slim'
+  DEFAULT_HTTP_CODE = 200
+
+  attr_accessor :env
+  attr_reader :action, :params, :request
+
+  def initialize(env, params, request)
     @env = env
     @params = params
+    @request = request
   end
 
   def resolve(action)
@@ -12,48 +18,26 @@ class ApplicationController
     self.send(action)
   end
 
-  def render(code:, headers: {}, body: nil, template: nil, no_content: false)
-    template = "./app/views/users/#{action}.slim" if template == nil
+  def render(code: DEFAULT_HTTP_CODE, head: nil, headers: {}, body: nil, template: nil, layout: DEFAULT_LAYOUT)
+    return [head, headers, nil] unless head.nil?
+    return [code, headers, [body]] unless body.nil?
 
-    if template && !no_content
-      body = Slim::Template.new(template).render(self)
-    end
-
-    http_body = body ? [body] : nil
-    [code, headers, http_body]
+    template ||= template_path(action)
+    body =
+      if layout.nil?
+        Slim::Template.new(template).render(self)
+      else
+        Slim::Template.new(layout).render(self) do
+          Slim::Template.new(template).render(self)
+        end
+      end
+    [code, headers, [body]]
   end
 
-  #
-  # def result
-  #   result = Rack::Request.new(@env)
-  #   # puts result.inspect
-  #   result.path
-  #
-  #   paths = result.path.split('/')
-  #
-  #
-  #
-  #
-  #   @year = 2022
-  #   @author = 'Evg'
-  #
-  #
-  #   db = Sequel.connect('sqlite://blog.db')
-  #   @items = db[:items]
-  #
-  #   template = if paths[1] == 'users' && paths[2].nil?
-  #                "./lib/views/index.slim"
-  #              elsif paths[1] == 'users'
-  #                "./lib/views/show.slim"
-  #              else
-  #                nil
-  #              end
-  #   code = template.nil? ? 404 : 200
-  #   template ||= "./lib/views/404.slim"
-  #   result = Slim::Template.new(template).render(self)
-  #
-  #
-  #
-  #   [code, {"Content-Type" => "text/html"}, [result]]
-  # end
+  private
+
+  def template_path(action)
+    path = self.class.to_s.delete_suffix('Controller').split('::').map(&:downcase).join('/')
+    "./app/views/#{path}/#{action}.slim"
+  end
 end

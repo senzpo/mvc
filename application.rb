@@ -24,7 +24,7 @@ class Application
     result = @router.resolve(request.path, request.request_method)
 
     if result
-      controller = result.controller.new(env, result.params)
+      controller = result.controller.new(env, result.params, request)
       controller.resolve(result.action)
     else
       raise NotFoundError
