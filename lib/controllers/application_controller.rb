@@ -6,7 +6,7 @@ class ApplicationController
   DEFAULT_HTTP_CODE = 200
 
   attr_accessor :env
-  attr_reader :action, :params, :request, :json_params, :json_params
+  attr_reader :action, :params, :request, :json_params
 
   def initialize(env, params, request)
     @env = env
