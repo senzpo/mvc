@@ -35,8 +35,6 @@ namespace :db do
 end
 
 namespace :test do
-  ENV['APP_ENV']='test'
-
   require 'rake'
   require 'rspec/core/rake_task'
 
