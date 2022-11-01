@@ -5,9 +5,10 @@
   get '/users/:id', to: 'web#users#show'
   post '/users/:id', to: 'web#users#update'
   get '/users/:id/edit', to: 'web#users#edit'
+
   get '/api/v1/users', to: 'api#v1#users#index'
   get '/api/v1/users/:id', to: 'api#v1#users#show'
-  post '/api/v1/users/:id', to: 'api#v1#users#update'
+  patch '/api/v1/users/:id', to: 'api#v1#users#update'
   delete '/api/v1/users/:id', to: 'api#v1#users#delete'
   post '/api/v1/users', to: 'api#v1#users#create'
   get '/', to: 'web#home#index'
