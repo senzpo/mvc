@@ -9,14 +9,14 @@ module Api
 
       def update
         user = Application.db[:users].where(id: params[:id]).first
-        params = user.merge(json_params)
+        params = user.merge(request_params)
         Application.db[:users].where(id: params[:id]).update(params)
 
         render head: 204
       end
 
       def create
-        Application.db[:users].insert(json_params)
+        Application.db[:users].insert(request_params)
 
         render head: 204
       end

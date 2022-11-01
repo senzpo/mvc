@@ -6,13 +6,12 @@ class ApplicationController
   DEFAULT_HTTP_CODE = 200
 
   attr_accessor :env
-  attr_reader :action, :params, :request, :json_params
+  attr_reader :action, :params, :request
 
   def initialize(env, params, request)
     @env = env
     @params = params
     @request = request
-    @json_params = JSON.parse(request.body.read).transform_keys(&:to_sym) if has_json_body?(request)
   end
 
   def resolve(action)
@@ -35,6 +34,14 @@ class ApplicationController
         end
       end
     [code, headers, [body]]
+  end
+
+  def request_params
+    return {} if request.body.nil?
+    case request.content_type
+    when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
+    else request.params.transform_keys(&:to_sym)
+    end
   end
 
   private
