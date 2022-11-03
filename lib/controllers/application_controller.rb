@@ -37,11 +37,15 @@ class ApplicationController
   end
 
   def request_params
-    return {} if request.body.nil?
-    case request.content_type
-    when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
-    else request.params.transform_keys(&:to_sym)
-    end
+    return @request_params if defined?(@request_params)
+    return @request_params = {} if request.body.nil?
+
+    @request_params =
+      case request.content_type
+      when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
+      else request.params.transform_keys(&:to_sym)
+      end
+    @request_params
   end
 
   private
@@ -49,9 +53,5 @@ class ApplicationController
   def template_path(action)
     path = self.class.to_s.delete_suffix('Controller').split('::').map(&:downcase).join('/')
     "./app/views/#{path}/#{action}.slim"
-  end
-
-  def has_json_body?(request)
-    request.content_type == 'application/json' && request.content_length != '0'
   end
 end
