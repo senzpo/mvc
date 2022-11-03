@@ -7,11 +7,15 @@ class Application
   class NotFoundError < StandardError; end
 
   def self.db
-    @@db ||= Sequel.connect(self.db_config['development']['db']['connection_line'])
+    @@db ||= Sequel.connect(self.db_config['db']['connection_line'])
   end
 
   def self.db_config
-    @@db_config ||= YAML.load_file('config/database.yml')
+    @@db_config ||= YAML.load_file('config/database.yml')[app_env]
+  end
+
+  def self.app_env
+    ENV.fetch('APP_ENV', 'development')
   end
 
   def initialize

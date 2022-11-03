@@ -12,16 +12,16 @@ module Web
 
     def update
       user = Application.db[:users].where(id: params[:id]).first
-      params = user.merge(request.params.transform_keys(&:to_sym))
+      params = user.merge(request_params)
       Application.db[:users].where(id: params[:id]).update(params)
 
-      render head: 302, headers: {'Location' => "/users/#{params[:id]}"}
+      render head: 302, headers: {'location' => "/users/#{params[:id]}"}
     end
 
     def create
-      Application.db[:users].insert(request.params)
+      Application.db[:users].insert(request_params)
 
-      render head: 302, headers: {'Location' => '/users'}
+      render head: 302, headers: {'location' => '/users'}
     end
 
     def edit

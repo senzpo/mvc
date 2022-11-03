@@ -2,3 +2,7 @@ development:
   db:
     name: 'blog.db'
     connection_line: 'sqlite://blog.db'
+test:
+  db:
+    name: 'blog_test.db'
+    connection_line: 'sqlite://blog_test.db'

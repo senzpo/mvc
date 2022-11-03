@@ -1,4 +1,5 @@
 require 'slim/include'
+require 'json'
 
 class ApplicationController
   DEFAULT_LAYOUT = './app/views/application_layout.slim'
@@ -18,9 +19,10 @@ class ApplicationController
     self.send(action)
   end
 
-  def render(code: DEFAULT_HTTP_CODE, head: nil, headers: {}, body: nil, template: nil, layout: DEFAULT_LAYOUT, locals: {})
+  def render(code: DEFAULT_HTTP_CODE, head: nil, headers: {}, body: nil, template: nil, layout: DEFAULT_LAYOUT, locals: {}, json: nil)
     return [head, headers, nil] unless head.nil?
     return [code, headers, [body]] unless body.nil?
+    return [code, headers.merge({'content-type' => 'application/json'}), [json.to_json]] unless json.nil?
 
     template ||= template_path(action)
     body =
@@ -32,6 +34,18 @@ class ApplicationController
         end
       end
     [code, headers, [body]]
+  end
+
+  def request_params
+    return @request_params if defined?(@request_params)
+    return @request_params = {} if request.body.nil?
+
+    @request_params =
+      case request.content_type
+      when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
+      else request.params.transform_keys(&:to_sym)
+      end
+    @request_params
   end
 
   private
