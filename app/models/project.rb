@@ -1,6 +1,5 @@
 class Project < ApplicationModel
-  # TODO: Numeric optional
-  # attribute :id, Types::Coercible::String
-  attribute :title, Types::Coercible::String
-  attribute :description, Types::Coercible::String
+  attribute :id, Types::Coercible::Integer.optional.meta(info: 'Uniq ID')
+  attribute :title, Types::Coercible::String.constrained(min_size: 3)
+  attribute :description, Types::Coercible::String.optional
 end
