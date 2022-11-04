@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'slim/include'
 require 'json'
 
@@ -16,13 +18,13 @@ class ApplicationController
 
   def resolve(action)
     @action = action
-    self.send(action)
+    send(action)
   end
 
   def render(code: DEFAULT_HTTP_CODE, head: nil, headers: {}, body: nil, template: nil, layout: DEFAULT_LAYOUT, locals: {}, json: nil)
     return [head, headers, nil] unless head.nil?
     return [code, headers, [body]] unless body.nil?
-    return [code, headers.merge({'content-type' => 'application/json'}), [json.to_json]] unless json.nil?
+    return [code, headers.merge({ 'content-type' => 'application/json' }), [json.to_json]] unless json.nil?
 
     template ||= template_path(action)
     body =

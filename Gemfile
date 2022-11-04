@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
+gem 'pry'
 gem 'puma'
 gem 'rack'
-gem 'slim'
-gem 'sequel'
-gem 'sqlite3'
-gem 'pry'
 gem 'rake'
 gem 'rspec'
+gem 'sequel'
+gem 'slim'
+gem 'sqlite3'
 
 gem 'dry-struct'
-gem 'dry-validation'
 gem 'dry-transaction'
+gem 'dry-validation'
+
+gem 'rubocop', require: false
+gem 'yard', require: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry-struct'
 
 module Types
@@ -5,5 +7,4 @@ module Types
 end
 
 class ApplicationModel < Dry::Struct
-
 end

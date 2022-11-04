@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class RegexpRouter
-  HTTP_METHODS = %w[get post patch put delete options head]
+  HTTP_METHODS = %w[get post patch put delete options head].freeze
 
   class Route
     attr_reader :controller, :action, :pattern, :method
@@ -23,6 +25,7 @@ class RegexpRouter
 
       pattern_split.each_with_index do |e, index|
         next if e.start_with?(':')
+
         if e != path_split[index]
           matched = false
           break
@@ -78,11 +81,9 @@ class RegexpRouter
   end
 
   def resolve(path, method)
-    route = routes.find { |route| route.matched?(path, method.downcase)}
+    route = routes.find { |route| route.matched?(path, method.downcase) }
 
-    if route
-      return Result.new(route, path)
-    end
+    return Result.new(route, path) if route
   end
 
   private
@@ -99,7 +100,7 @@ class RegexpRouter
 
   def register_route(method, pattern, options)
     path_pieces = options[:to].split('#')
-    controller = path_pieces.slice(0..-2).map { |s| s.capitalize }.join('::')
+    controller = path_pieces.slice(0..-2).map(&:capitalize).join('::')
     action = path_pieces.last
     @routes << Route.new(controller: controller, action: action, pattern: pattern, method: method)
   end
