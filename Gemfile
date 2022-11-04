@@ -10,3 +10,7 @@ gem 'sqlite3'
 gem 'pry'
 gem 'rake'
 gem 'rspec'
+
+gem 'dry-struct'
+gem 'dry-validation'
+gem 'dry-transaction'
