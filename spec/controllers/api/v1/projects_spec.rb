@@ -1,4 +1,4 @@
-require_relative '../../../../spec_helper'
+require 'spec_helper'
 
 RSpec.describe 'Api::V1::ProjectsController' do
   let(:app) { Application.new }

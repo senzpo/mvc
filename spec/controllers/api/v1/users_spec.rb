@@ -1,4 +1,4 @@
-require_relative '../../../../spec_helper'
+require 'spec_helper'
 
 RSpec.describe 'Api::V1::UsersController' do
   let(:app) { Application.new }
@@ -6,7 +6,6 @@ RSpec.describe 'Api::V1::UsersController' do
   let(:user_id) { Application.db[:users].insert(user_attributes) }
 
   it 'index' do
-    binding.pry
     env = Rack::MockRequest.env_for("/api/v1/users", "REQUEST_METHOD" => "GET")
     response = app.call(env)
 
