@@ -18,8 +18,10 @@ RSpec.describe 'Api::V1::UsersController' do
   it 'update' do
     name = 'Some new name'
     attributes = { name: name }.to_json
-    env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}", 'REQUEST_METHOD' => 'PATCH',
-                                                                'CONTENT_TYPE' => 'application/json', input: attributes)
+    env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}",
+                                    'REQUEST_METHOD' => 'PATCH',
+                                    'CONTENT_TYPE' => 'application/json',
+                                    input: attributes)
     response = app.call(env)
 
     code, = response

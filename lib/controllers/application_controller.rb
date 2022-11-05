@@ -3,6 +3,7 @@
 require 'slim/include'
 require 'json'
 
+# All app controllers must be subclasses of ApplicationController
 class ApplicationController
   DEFAULT_LAYOUT = './app/views/application_layout.slim'
   DEFAULT_HTTP_CODE = 200
@@ -21,21 +22,15 @@ class ApplicationController
     send(action)
   end
 
-  def render(code: DEFAULT_HTTP_CODE, head: nil, headers: {}, body: nil, template: nil, layout: DEFAULT_LAYOUT, locals: {}, json: nil)
-    return [head, headers, nil] unless head.nil?
+  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT, locals: {})
     return [code, headers, [body]] unless body.nil?
-    return [code, headers.merge({ 'content-type' => 'application/json' }), [json.to_json]] unless json.nil?
 
-    template ||= template_path(action)
-    body =
-      if layout.nil?
-        Slim::Template.new(template).render(locals)
-      else
-        Slim::Template.new(layout).render(self) do
-          Slim::Template.new(template).render(locals)
-        end
-      end
+    body = prepare_body(layout, template_path(action), locals)
     [code, headers, [body]]
+  end
+
+  def head(code, headers: {})
+    [code, headers, nil]
   end
 
   def request_params
@@ -47,7 +42,6 @@ class ApplicationController
       when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
       else request.params.transform_keys(&:to_sym)
       end
-    @request_params
   end
 
   private
@@ -55,5 +49,13 @@ class ApplicationController
   def template_path(action)
     path = self.class.to_s.delete_suffix('Controller').split('::').map(&:downcase).join('/')
     "./app/views/#{path}/#{action}.slim"
+  end
+
+  def prepare_body(layout, template, locals)
+    return Slim::Template.new(template).render(locals) if layout.nil?
+
+    Slim::Template.new(layout).render(self) do
+      Slim::Template.new(template).render(locals)
+    end
   end
 end

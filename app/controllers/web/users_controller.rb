@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Web
+  # Handler for users page
   class UsersController < ApplicationController
     def index
       users = Application.db[:users].all
@@ -17,13 +18,13 @@ module Web
       params = user.merge(request_params)
       Application.db[:users].where(id: params[:id]).update(params)
 
-      render head: 302, headers: { 'location' => "/users/#{params[:id]}" }
+      head 302, headers: { 'location' => "/users/#{params[:id]}" }
     end
 
     def create
       Application.db[:users].insert(request_params)
 
-      render head: 302, headers: { 'location' => '/users' }
+      head 302, headers: { 'location' => '/users' }
     end
 
     def edit

@@ -9,8 +9,11 @@ RSpec.describe 'Api::V1::ProjectsController' do
   it 'create' do
     Application.db[:users].insert(name: 'Test', email: 'some@example.com', password: 'secret')
     number_of_projects = Application.db[:users].count
-    env = Rack::MockRequest.env_for('/api/v1/projects', 'REQUEST_METHOD' => 'POST',
-                                                        'CONTENT_TYPE' => 'application/json', input: project_attributes.to_json)
+    env = Rack::MockRequest.env_for(
+      '/api/v1/projects', 'REQUEST_METHOD' => 'POST',
+                          'CONTENT_TYPE' => 'application/json',
+                          input: project_attributes.to_json
+    )
     response = app.call(env)
 
     code, = response
