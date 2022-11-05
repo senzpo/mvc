@@ -75,7 +75,7 @@ class RegexpRouter
     end
 
     def controller
-      instance_eval "#{route.controller}Controller", __FILE__, __LINE__
+      instance_eval "#{route.controller}Controller", __FILE__, __LINE__ # Return class of matched controller
     end
 
     def action
