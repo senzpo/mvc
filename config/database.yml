@@ -1,8 +1,10 @@
 development:
   db:
     name: 'blog.db'
+    adapter: 'sqlite'
     connection_line: 'sqlite://temp/blog.db'
 test:
   db:
-    name: 'blog_test.db'
-    connection_line: 'sqlite://temp/blog_test.db'
+    name: 'blog.db'
+    adapter: 'sqlite'
+    connection_line: 'sqlite://temp/test_blog.db'

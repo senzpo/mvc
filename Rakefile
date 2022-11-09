@@ -14,25 +14,25 @@ namespace :db do
   # http://sequel.jeremyevans.net/documentation.html
   desc 'Create database'
   task :create do
-    SQLite3::Database.open(Application.db_config['db']['name'])
+    SQLite3::Database.open(ApplicationRepository.db_config['db']['name'])
   end
 
   desc 'Drop database'
   task :drop do
-    File.delete(Application.db_config['db']['name'])
+    File.delete(ApplicationRepository.db_config['db']['name'])
   end
 
   desc 'Migrate database'
   task :migrate do
     Sequel.extension :migration
-    Sequel::Migrator.run(Application.db, 'db/migrations')
+    Sequel::Migrator.run(ApplicationRepository::DB, 'db/migrations')
   end
 
   desc 'Rollback database'
   task :rollback do
     Sequel.extension :migration
     steps = ENV['STEPS'].to_i || 1
-    Sequel::Migrator.run(Application.db, 'db/migrations', relative: steps * -1)
+    Sequel::Migrator.run(ApplicationRepository.DB, 'db/migrations', relative: steps * -1)
   end
 end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Api::V1::UsersController' do
   let(:app) { Application.new }
   let(:user_attributes) { { name: 'Test', email: 'some@example.com', password: 'secret' } }
-  let(:user_id) { Application.db[:users].insert(user_attributes) }
+  let(:user_id) { ApplicationRepository::DB[:users].insert(user_attributes) }
 
   it 'index' do
     env = Rack::MockRequest.env_for('/api/v1/users', 'REQUEST_METHOD' => 'GET')
@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::UsersController' do
 
     code, = response
     expect(code).to eq 204
-    expect(Application.db[:users].where(id: user_id, name: name).count).to eq(1)
+    expect(ApplicationRepository::DB[:users].where(id: user_id, name: name).count).to eq(1)
   end
 
   it 'show' do
@@ -38,14 +38,14 @@ RSpec.describe 'Api::V1::UsersController' do
   end
 
   it 'create' do
-    number_of_users = Application.db[:users].count
+    number_of_users = ApplicationRepository::DB[:users].count
     env = Rack::MockRequest.env_for('/api/v1/users', 'REQUEST_METHOD' => 'POST', 'CONTENT_TYPE' => 'application/json',
                                                      input: user_attributes.to_json)
     response = app.call(env)
 
     code, = response
     expect(code).to eq 204
-    expect(Application.db[:users].count).to eq(number_of_users + 1)
+    expect(ApplicationRepository::DB[:users].count).to eq(number_of_users + 1)
   end
 
   it 'delete' do
@@ -54,6 +54,6 @@ RSpec.describe 'Api::V1::UsersController' do
 
     code, = response
     expect(code).to eq 204
-    expect(Application.db[:users].where(id: user_id).count).to eq(0)
+    expect(ApplicationRepository::DB[:users].where(id: user_id).count).to eq(0)
   end
 end

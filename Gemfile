@@ -16,4 +16,7 @@ gem 'dry-transaction'
 gem 'dry-validation'
 
 gem 'rubocop', require: false
+gem 'rubocop-rake', require: false
+gem 'rubocop-rspec', require: false
+gem 'rubocop-sequel', require: false
 gem 'yard', require: false
