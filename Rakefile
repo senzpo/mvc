@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 
 Bundler.require
@@ -10,27 +12,27 @@ end
 
 namespace :db do
   # http://sequel.jeremyevans.net/documentation.html
-  desc "Create database"
+  desc 'Create database'
   task :create do
-    SQLite3::Database.open(Application.db_config['db']['name'])
+    SQLite3::Database.open(ApplicationRepository.db_config['db']['name'])
   end
 
-  desc "Drop database"
+  desc 'Drop database'
   task :drop do
-    File.delete(Application.db_config['db']['name'])
+    File.delete(ApplicationRepository.db_config['db']['name'])
   end
 
-  desc "Migrate database"
+  desc 'Migrate database'
   task :migrate do
     Sequel.extension :migration
-    Sequel::Migrator.run(Application.db, "db/migrations")
+    Sequel::Migrator.run(ApplicationRepository::DB, 'db/migrations')
   end
 
-  desc "Rollback database"
+  desc 'Rollback database'
   task :rollback do
     Sequel.extension :migration
     steps = ENV['STEPS'].to_i || 1
-    Sequel::Migrator.run(Application.db, "db/migrations", relative: steps * (-1))
+    Sequel::Migrator.run(ApplicationRepository.DB, 'db/migrations', relative: steps * -1)
   end
 end
 
@@ -38,11 +40,11 @@ namespace :test do
   require 'rake'
   require 'rspec/core/rake_task'
 
-  desc "Run controllers test"
+  desc 'Run controllers test'
   task :controllers do
     RSpec::Core::RakeTask.new(:spec) do |t|
       t.pattern = 'spec/controllers/**/*_spec.rb'
     end
-    Rake::Task["spec"].execute
+    Rake::Task['spec'].execute
   end
 end

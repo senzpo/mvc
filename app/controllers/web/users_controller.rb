@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module Web
+  # Handler for users page
   class UsersController < ApplicationController
     def index
-      users = Application.db[:users].all
+      users = ApplicationRepository::DB[:users].all
 
-      render locals: {users: users}
+      render locals: { users: users }
     end
 
     def new
@@ -11,29 +14,29 @@ module Web
     end
 
     def update
-      user = Application.db[:users].where(id: params[:id]).first
+      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
       params = user.merge(request_params)
-      Application.db[:users].where(id: params[:id]).update(params)
+      ApplicationRepository::DB[:users].where(id: params[:id]).update(params)
 
-      render head: 302, headers: {'location' => "/users/#{params[:id]}"}
+      head 302, headers: { 'location' => "/users/#{params[:id]}" }
     end
 
     def create
-      Application.db[:users].insert(request_params)
+      ApplicationRepository::DB[:users].insert(request_params)
 
-      render head: 302, headers: {'location' => '/users'}
+      head 302, headers: { 'location' => '/users' }
     end
 
     def edit
-      user = Application.db[:users].where(id: params[:id]).first
+      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
 
-      render locals: {user: user}
+      render locals: { user: user }
     end
 
     def show
-      user = Application.db[:users].where(id: params[:id]).first
+      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
 
-      render locals: {user: user}
+      render locals: { user: user }
     end
   end
 end

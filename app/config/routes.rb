@@ -1,4 +1,6 @@
--> do
+# frozen_string_literal: true
+
+lambda do
   get '/users', to: 'web#users#index'
   post '/users', to: 'web#users#create'
   get '/users/new', to: 'web#users#new'

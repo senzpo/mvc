@@ -1,3 +1,5 @@
 .idea/*
 *.swp
-blog.db
+temp/*
+doc/*
+.yardoc/*

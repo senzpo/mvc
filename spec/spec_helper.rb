@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler'
-require 'rake'
 
 Bundler.require
 
 require './application'
 
 RSpec.configure do |config|
-  config.before(:all) do
+  config.before(:suite) do
     `rake db:create`
     `rake db:migrate`
   end
 
-  config.after(:all) do
+  config.after(:suite) do
     `rake db:drop`
   end
 end
