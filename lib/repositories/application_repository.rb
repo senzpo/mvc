@@ -2,6 +2,8 @@
 
 # Main gateway for persisted storage
 class ApplicationRepository
+  attr_reader :table_name
+
   def self.db_config
     YAML.load_file('config/database.yml')[Application::Config.env]
   end
