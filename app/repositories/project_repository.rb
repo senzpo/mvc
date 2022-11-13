@@ -1,7 +1,7 @@
 class ProjectRepository < ApplicationRepository
   def self.all
     # TODO: should return Project instead of hash
-    ApplicationRepository::DB[:projects].all
+    ApplicationRepository::DB[:projects].all.map { |p| Project.new(p) }
   end
 
   def self.create(project_params)

@@ -6,8 +6,12 @@ module Api
     class ProjectsController < ApplicationController
       def index
         projects = ProjectRepository.all
+        props = [:id, :title, :description]
+        data = projects.map do |p|
+          p.to_h.select {|key| props.include? key }
+        end
 
-        render body: projects.to_json, headers: { 'content-type' => 'application/json' }
+        render body: data.to_json, headers: { 'content-type' => 'application/json' }
       end
 
       def create
