@@ -1,7 +1,7 @@
 class ProjectContract < ApplicationContract
   params do
     required(:title).filled(:string)
-    required(:description).filled(:string)
+    required(:description).maybe(:string)
   end
 
   rule(:title) do
