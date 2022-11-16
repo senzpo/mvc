@@ -8,7 +8,7 @@ module Api
         projects = ProjectRepository.all
         props = [:id, :title, :description]
         data = projects.map do |p|
-          p.to_h.select {|key| props.include? key }
+          p.to_h.select { |key| props.include? key }
         end
 
         render body: data.to_json, headers: { 'content-type' => 'application/json' }
@@ -16,7 +16,11 @@ module Api
 
       def create
         validation_result = ProjectContract.new.call(request_params)
-        return render(code: 422, body: validation_result.errors.to_h.to_json, headers: { 'content-type' => 'application/json' }) if validation_result.failure?
+        return render(
+          code: 422, body: validation_result.errors.to_h.to_json,
+          headers: { 'content-type' => 'application/json' }
+        ) if validation_result.failure?
+
         # project = Project.new(validation_result.to_h)
         # ProjectRepository.create(project)
         ProjectRepository.create(request_params)

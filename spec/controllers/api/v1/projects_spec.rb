@@ -18,9 +18,10 @@ RSpec.describe 'Api::V1::ProjectsController' do
   it 'create' do
     number_of_projects = ApplicationRepository::DB[:projects].count
     env = Rack::MockRequest.env_for(
-      '/api/v1/projects', 'REQUEST_METHOD' => 'POST',
-                          'CONTENT_TYPE' => 'application/json',
-                          input: project_attributes.to_json
+      '/api/v1/projects',
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'application/json',
+      input: project_attributes.to_json
     )
     response = app.call(env)
 
@@ -32,7 +33,8 @@ RSpec.describe 'Api::V1::ProjectsController' do
   it 'failed to create' do
     number_of_projects = ApplicationRepository::DB[:projects].count
     env = Rack::MockRequest.env_for(
-      '/api/v1/projects', 'REQUEST_METHOD' => 'POST',
+      '/api/v1/projects',
+      'REQUEST_METHOD' => 'POST',
       'CONTENT_TYPE' => 'application/json',
       input: invalid_project_attributes.to_json
     )
