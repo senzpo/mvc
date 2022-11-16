@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Repository layer for Project
 class ProjectRepository < ApplicationRepository
   def self.all
     ApplicationRepository::DB[:projects].all.map { |p| Project.new(p) }

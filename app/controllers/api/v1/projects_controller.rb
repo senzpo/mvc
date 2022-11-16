@@ -6,7 +6,7 @@ module Api
     class ProjectsController < ApplicationController
       def index
         projects = ProjectRepository.all
-        props = [:id, :title, :description]
+        props = %i[id title description]
         data = projects.map do |p|
           p.to_h.select { |key| props.include? key }
         end
@@ -16,10 +16,12 @@ module Api
 
       def create
         validation_result = ProjectContract.new.call(request_params)
-        return render(
-          code: 422, body: validation_result.errors.to_h.to_json,
-          headers: { 'content-type' => 'application/json' }
-        ) if validation_result.failure?
+        if validation_result.failure?
+          return render(
+            code: 422, body: validation_result.errors.to_h.to_json,
+            headers: { 'content-type' => 'application/json' }
+          )
+        end
 
         project = Project.new(validation_result.to_h)
         ProjectRepository.create(project)

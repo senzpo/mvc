@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Validation for project model
 class ProjectContract < ApplicationContract
   params do
     required(:title).filled(:string)
