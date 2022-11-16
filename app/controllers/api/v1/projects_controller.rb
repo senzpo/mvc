@@ -27,17 +27,18 @@ module Api
         head 201
       end
 
-      # def update
-      #   validation_result = ProjectValidor.new.call(request_params)
-      #   if validation_result.valid?
-      #     persisting_result = ProjectRepository.update(params[:id], request_params)
-      #     return head 204 if persisting_result.succes?
-      #
-      #     render code: 422, body: persisting_result.errors
-      #   else
-      #     render code: 422, body: validation_result.errors
-      #   end
-      # end
+      def update
+        validation_result = ProjectContract.new.call(request_params)
+        if validation_result.success?
+          project = Project.new(request_params.merge({ id: params[:id] }))
+          persisting_result = ProjectRepository.save(project)
+          return head 204 if persisting_result == 1
+
+          render code: 422, body: persisting_result.errors
+        else
+          render code: 422, body: validation_result.errors
+        end
+      end
       #
       # def create
       #   ApplicationRepository::DB[:users].insert(request_params)

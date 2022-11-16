@@ -7,4 +7,9 @@ class ProjectRepository < ApplicationRepository
     hash_attributes = project.to_h
     ApplicationRepository::DB[:projects].insert(hash_attributes)
   end
+
+  def self.save(project)
+    hash_attributes = project.to_h
+    ApplicationRepository::DB[:projects].where(id: hash_attributes[:id]).update(hash_attributes)
+  end
 end

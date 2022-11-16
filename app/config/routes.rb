@@ -16,6 +16,7 @@ lambda do
 
   get '/api/v1/projects', to: 'api#v1#projects#index'
   post '/api/v1/projects', to: 'api#v1#projects#create'
+  patch '/api/v1/projects/:id', to: 'api#v1#projects#update'
 
   get '/', to: 'web#home#index'
 end
