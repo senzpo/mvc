@@ -44,4 +44,28 @@ RSpec.describe 'Api::V1::ProjectsController' do
     expect(code).to eq 422
     expect(ApplicationRepository::DB[:projects].count).to eq(number_of_projects)
   end
+
+  it 'update' do
+    ApplicationRepository::DB[:projects].insert(project_attributes)
+
+    project = ApplicationRepository::DB[:projects].where(project_attributes).first
+    new_title = "updated #{project[:title]}"
+    new_description = "updated #{project[:description]}"
+    new_attributes = project.merge({ title: new_title, description: new_description })
+
+    env = Rack::MockRequest.env_for(
+      "/api/v1/projects/#{project[:id]}",
+      'REQUEST_METHOD' => 'PATCH',
+      'CONTENT_TYPE' => 'application/json',
+      input: new_attributes.to_json
+    )
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 204
+
+    updated_project = ApplicationRepository::DB[:projects].where(id: new_attributes[:id]).first
+    expect(updated_project[:title]).to eq new_title
+    expect(updated_project[:description]).to eq new_description
+  end
 end
