@@ -41,6 +41,13 @@ module Api
           render code: 422, body: validation_result.errors
         end
       end
+
+      def delete
+        # should accept model?
+        ProjectRepository.delete(params[:id])
+
+        head 204
+      end
       #
       # def create
       #   ApplicationRepository::DB[:users].insert(request_params)
@@ -54,11 +61,6 @@ module Api
       #   render body: user.to_json, headers: { 'content-type' => 'application/json' }
       # end
       #
-      # def delete
-      #   ApplicationRepository::DB[:users].where(id: params[:id]).delete
-      #
-      #   head 204
-      # end
     end
   end
 end
