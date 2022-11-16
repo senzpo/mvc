@@ -68,4 +68,21 @@ RSpec.describe 'Api::V1::ProjectsController' do
     expect(updated_project[:title]).to eq new_title
     expect(updated_project[:description]).to eq new_description
   end
+
+  it 'delete' do
+    ApplicationRepository::DB[:projects].insert(project_attributes)
+
+    project = ApplicationRepository::DB[:projects].where(project_attributes).first
+
+    env = Rack::MockRequest.env_for(
+      "/api/v1/projects/#{project[:id]}",
+      'REQUEST_METHOD' => 'DELETE'
+    )
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 204
+
+    expect(ApplicationRepository::DB[:projects].where(id: project[:id]).first).to eq nil
+  end
 end
