@@ -21,9 +21,8 @@ module Api
           headers: { 'content-type' => 'application/json' }
         ) if validation_result.failure?
 
-        # project = Project.new(validation_result.to_h)
-        # ProjectRepository.create(project)
-        ProjectRepository.create(request_params)
+        project = Project.new(validation_result.to_h)
+        ProjectRepository.create(project)
 
         head 201
       end
