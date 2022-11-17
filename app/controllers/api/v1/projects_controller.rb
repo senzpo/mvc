@@ -5,16 +5,36 @@ module Api
     # Provides handlers for managing projects via API v1
     class ProjectsController < ApplicationController
       def index
-        projects = ProjectRepository.all({})
+        projects = ProjectRepository.all
+        props = %i[id title description]
+        data = projects.map do |p|
+          p.to_h.select { |key| props.include? key }
+        end
 
-        render body: projects.to_json, headers: { 'content-type' => 'application/json' }
+        render body: data.to_json, headers: { 'content-type' => 'application/json' }
+      end
+
+      def create
+        validation_result = ProjectContract.new.call(request_params)
+        if validation_result.failure?
+          return render(
+            code: 422, body: validation_result.errors.to_h.to_json,
+            headers: { 'content-type' => 'application/json' }
+          )
+        end
+
+        project = Project.new(validation_result.to_h)
+        ProjectRepository.create(project)
+
+        head 201
       end
 
       def update
-        validation_result = ProjectValidor.new.call(request_params)
-        if validation_result.valid?
-          persisting_result = ProjectRepository.update(params[:id], request_params)
-          return head 204 if persisting_result.succes?
+        validation_result = ProjectContract.new.call(request_params)
+        if validation_result.success?
+          project = Project.new(request_params.merge({ id: params[:id] }))
+          persisting_result = ProjectRepository.save(project)
+          return head 204 if persisting_result == 1
 
           render code: 422, body: persisting_result.errors
         else
@@ -22,23 +42,25 @@ module Api
         end
       end
 
-      def create
-        ApplicationRepository::DB[:users].insert(request_params)
-
-        head 204
-      end
-
-      def show
-        user = ApplicationRepository::DB[:users].where(id: params[:id]).first
-
-        render body: user.to_json, headers: { 'content-type' => 'application/json' }
-      end
-
       def delete
-        ApplicationRepository::DB[:users].where(id: params[:id]).delete
+        # should accept model?
+        ProjectRepository.delete(params[:id])
 
         head 204
       end
+      #
+      # def create
+      #   ApplicationRepository::DB[:users].insert(request_params)
+      #
+      #   head 204
+      # end
+      #
+      # def show
+      #   user = ApplicationRepository::DB[:users].where(id: params[:id]).first
+      #
+      #   render body: user.to_json, headers: { 'content-type' => 'application/json' }
+      # end
+      #
     end
   end
 end

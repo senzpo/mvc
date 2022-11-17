@@ -13,5 +13,11 @@ lambda do
   patch '/api/v1/users/:id', to: 'api#v1#users#update'
   delete '/api/v1/users/:id', to: 'api#v1#users#delete'
   post '/api/v1/users', to: 'api#v1#users#create'
+
+  get '/api/v1/projects', to: 'api#v1#projects#index'
+  post '/api/v1/projects', to: 'api#v1#projects#create'
+  patch '/api/v1/projects/:id', to: 'api#v1#projects#update'
+  delete '/api/v1/projects/:id', to: 'api#v1#projects#delete'
+
   get '/', to: 'web#home#index'
 end
