@@ -7,4 +7,8 @@ module Web
       render
     end
   end
+
+  def signup
+
+  end
 end
