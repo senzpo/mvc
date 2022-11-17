@@ -2,6 +2,8 @@
 
 # Main gateway for persisted storage
 class ApplicationRepository
+  class NotFoundRecord < StandardError; end
+
   attr_reader :table_name
 
   def self.db_config

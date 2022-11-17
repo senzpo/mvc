@@ -69,6 +69,19 @@ RSpec.describe 'Api::V1::ProjectsController' do
     expect(updated_project[:description]).to eq new_description
   end
 
+  it 'failed to update with 404' do
+    env = Rack::MockRequest.env_for(
+      '/api/v1/projects/100500',
+      'REQUEST_METHOD' => 'PATCH',
+      'CONTENT_TYPE' => 'application/json',
+      input: project_attributes.to_json
+    )
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 404
+  end
+
   it 'delete' do
     ApplicationRepository::DB[:projects].insert(project_attributes)
 
@@ -84,5 +97,34 @@ RSpec.describe 'Api::V1::ProjectsController' do
     expect(code).to eq 204
 
     expect(ApplicationRepository::DB[:projects].where(id: project[:id]).first).to eq nil
+  end
+
+  it 'failed to delete with 404' do
+    env = Rack::MockRequest.env_for(
+      '/api/v1/projects/100500',
+      'REQUEST_METHOD' => 'DELETE'
+    )
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 404
+  end
+
+  it 'show' do
+    ApplicationRepository::DB[:projects].insert(project_attributes)
+    project = ApplicationRepository::DB[:projects].where(project_attributes).first
+    env = Rack::MockRequest.env_for("/api/v1/projects/#{project[:id]}", 'REQUEST_METHOD' => 'GET')
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 200
+  end
+
+  it 'failed to show with 404' do
+    env = Rack::MockRequest.env_for('/api/v1/projects/100500', 'REQUEST_METHOD' => 'GET')
+    response = app.call(env)
+
+    code, = response
+    expect(code).to eq 404
   end
 end
