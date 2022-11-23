@@ -6,9 +6,8 @@ module Web
     def index
       render
     end
-  end
-
-  def signup
-
+    def signup
+      render
+    end
   end
 end
