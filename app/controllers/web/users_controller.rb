@@ -14,7 +14,7 @@ module Web
 
       salt = SecureRandom.hex(4)
       password_hash = BCrypt::Password.create(salt + contract[:password])
-      user_params = contract.to_h.slice(:email).merge({password_hash: password_hash, salt: salt})
+      user_params = contract.to_h.slice(:email).merge({ password_hash: password_hash, salt: salt })
       UserRepository.create(user_params)
       # head 303, headers: { 'location' => '/login' }
       # doesn't work?
