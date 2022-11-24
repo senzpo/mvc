@@ -1,42 +1,34 @@
 # frozen_string_literal: true
 
+# Web interface
 module Web
+  require 'securerandom'
+
   # Handler for users page
   class UsersController < ApplicationController
-    def index
-      users = ApplicationRepository::DB[:users].all
-
-      render locals: { users: users }
-    end
-
-    def new
-      render
-    end
-
-    def update
-      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
-      params = user.merge(request_params)
-      ApplicationRepository::DB[:users].where(id: params[:id]).update(params)
-
-      head 302, headers: { 'location' => "/users/#{params[:id]}" }
-    end
-
     def create
-      ApplicationRepository::DB[:users].insert(request_params)
+      contract = UserCreateContract.new.call(request_params)
 
-      head 302, headers: { 'location' => '/users' }
+      if contract.failure?
+        create_with_errors(contract)
+      else
+        create_with_valid_contract(contract)
+      end
     end
 
-    def edit
-      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
+    private
 
-      render locals: { user: user }
+    def create_with_errors(contract)
+      params = contract.to_h
+      render locals: { user: params, errors: contract.errors.to_h }
     end
 
-    def show
-      user = ApplicationRepository::DB[:users].where(id: params[:id]).first
-
-      render locals: { user: user }
+    def create_with_valid_contract(contract)
+      salt = SecureRandom.hex(4)
+      password_hash = BCrypt::Password.create(salt + contract[:password])
+      user_params = contract.to_h.slice(:email).merge({ password_hash: password_hash, salt: salt })
+      UserRepository.create(user_params)
+      head 303, headers: { 'location' => '/' }
     end
   end
 end

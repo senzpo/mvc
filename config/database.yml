@@ -3,8 +3,10 @@ development:
     name: 'blog.db'
     adapter: 'sqlite'
     connection_line: 'sqlite://temp/blog.db'
+    path: './temp/blog.db'
 test:
   db:
     name: 'blog.db'
     adapter: 'sqlite'
     connection_line: 'sqlite://temp/test_blog.db'
+    path: './temp/test_blog.db'

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Api::V1::UsersController' do
   let(:app) { Application.new }
-  let(:user_attributes) { { name: 'Test', email: 'some@example.com', password: 'secret' } }
+  let(:user_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
   let(:user_id) { ApplicationRepository::DB[:users].insert(user_attributes) }
 
   it 'index' do
@@ -16,8 +16,8 @@ RSpec.describe 'Api::V1::UsersController' do
   end
 
   it 'update' do
-    name = 'Some new name'
-    attributes = { name: name }.to_json
+    email = 'Some new email'
+    attributes = { email: email }.to_json
     env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}",
                                     'REQUEST_METHOD' => 'PATCH',
                                     'CONTENT_TYPE' => 'application/json',
@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::UsersController' do
 
     code, = response
     expect(code).to eq 204
-    expect(ApplicationRepository::DB[:users].where(id: user_id, name: name).count).to eq(1)
+    expect(ApplicationRepository::DB[:users].where(id: user_id, email: email).count).to eq(1)
   end
 
   it 'show' do
