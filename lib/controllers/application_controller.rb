@@ -30,7 +30,7 @@ class ApplicationController
   end
 
   def head(code, headers: {})
-    [code, headers, nil]
+    [code, headers, []]
   end
 
   def request_params
