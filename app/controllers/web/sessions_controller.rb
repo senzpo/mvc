@@ -2,7 +2,7 @@
 
 module Web
   # Handler for sessions
-  class SessionsController < ApplicationController
+  class SessionsController < Web::ApplicationController
     def new
       render
     end
@@ -19,10 +19,6 @@ module Web
       session = env['rack.session']
       session[:user_id] = user.id
       head 302, headers: {'Location' => '/'}
-    end
-
-    def current_user
-      # TODO
     end
   end
 end

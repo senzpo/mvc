@@ -5,7 +5,7 @@ module Web
   require 'securerandom'
 
   # Handler for users page
-  class UsersController < ApplicationController
+  class UsersController < Web::ApplicationController
     def create
       contract = UserCreateContract.new.call(request_params)
 

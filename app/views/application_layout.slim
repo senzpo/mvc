@@ -13,6 +13,8 @@ html
       ul
         li: a href="/login" Login
         li: a href="/signup" SignUp
+    - if @current_user
+      | Logged in as #{@current_user.email}
 
     == yield
 
