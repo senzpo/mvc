@@ -2,12 +2,12 @@
 
 module Web
   # Web controller with current_user methods
-  class Web::ApplicationController < ::ApplicationController
+  class ApplicationController < ::ApplicationController
     def current_user
       session = env['rack.session']
       return nil unless session
-      user = UserRepository.all(id: session[:user_id]).first
-      user
+
+      UserRepository.all(id: session[:user_id]).first
     end
 
     def render(*args)
