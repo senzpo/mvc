@@ -13,6 +13,10 @@ module Web
     def render(*args)
       @current_user = current_user
       super
+    rescue Application::NotFoundError
+      render 404_page
+    rescue UnAuthError
+      redirect
     end
   end
 end

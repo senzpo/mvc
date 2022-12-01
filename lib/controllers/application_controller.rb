@@ -11,6 +11,12 @@ class ApplicationController
   attr_accessor :env
   attr_reader :action, :params, :request
 
+  def self.before_action!(fn)
+    define_method :before_action do
+      send(fn)
+    end
+  end
+
   def initialize(env, params, request)
     @env = env
     @params = params
@@ -23,6 +29,9 @@ class ApplicationController
   end
 
   def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT)
+    if respond_to?(:before_action)
+      before_action
+    end
     return [code, headers, [body]] unless body.nil?
 
     body = prepare_body(layout, template_path(action))
