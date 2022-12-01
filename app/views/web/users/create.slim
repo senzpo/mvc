@@ -1,9 +1,9 @@
 h1 Some errors found
 form[method="post" action="/users"]
-  label[for="email"] Email(#{self[:errors][:email]})
-  input[name="email" type="email" value=self[:user][:email] ]
-  label[for="password"] Password(#{self[:errors][:password]})
+  label[for="email"] Email(#{@params[:errors][:email]})
+  input[name="email" type="email" value=@params[:user][:email] ]
+  label[for="password"] Password(#{@params[:errors][:password]})
   input[name="password" type="password"]
-  label[for="password_confirmation"] Password confirmation(#{self[:errors][:password_confirmation]})
+  label[for="password_confirmation"] Password confirmation(#{@params[:errors][:password_confirmation]})
   input[name="password_confirmation" type="password"]
   input[type="submit"]

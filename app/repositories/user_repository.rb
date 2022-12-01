@@ -2,9 +2,9 @@
 
 # Repository layer for User
 class UserRepository < ApplicationRepository
-  # def self.all
-  #   ApplicationRepository::DB[:projects].all.map { |p| Project.new(p) }
-  # end
+  def self.all(params = {})
+    ApplicationRepository::DB[:users].where(params).map { |p| User.new(p) }
+  end
 
   # def self.find(id)
   #   p = ApplicationRepository::DB[:projects].where(id: id).first

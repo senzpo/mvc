@@ -22,10 +22,10 @@ class ApplicationController
     send(action)
   end
 
-  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT, locals: {})
+  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT)
     return [code, headers, [body]] unless body.nil?
 
-    body = prepare_body(layout, template_path(action), locals)
+    body = prepare_body(layout, template_path(action))
     [code, headers, [body]]
   end
 
@@ -51,11 +51,11 @@ class ApplicationController
     "./app/views/#{path}/#{action}.slim"
   end
 
-  def prepare_body(layout, template, locals)
-    return Slim::Template.new(template).render(locals) if layout.nil?
+  def prepare_body(layout, template)
+    return Slim::Template.new(template).render(self) if layout.nil?
 
     Slim::Template.new(layout).render(self) do
-      Slim::Template.new(template).render(locals)
+      Slim::Template.new(template).render(self)
     end
   end
 end

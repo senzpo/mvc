@@ -1,13 +1,32 @@
 # frozen_string_literal: true
 
-# Handler for sessions
-class SessionsController < ApplicationController
-  def new; end
+module Web
+  # Handler for sessions
+  class SessionsController < Web::ApplicationController
+    def new
+      render
+    end
 
-  def create
-    # user = UserRepository.all(email: request_params[:email])
-    # tested_password = BCrypt::Password.new(user.salt + request_params[:password])
-    # tested_password == user.password_hash
-    head 200
+    def create
+      user = get_user(request_params[:email])
+      return head 302, headers: { 'Location' => '/login' } if user.nil?
+
+      return head 302, headers: { 'Location' => '/login' } unless valid_password?(user, request_params[:password])
+
+      session = env['rack.session']
+      session[:user_id] = user.id
+      head 302, headers: { 'Location' => '/' }
+    end
+
+    private
+
+    def get_user(email)
+      UserRepository.all(email: email).first
+    end
+
+    def valid_password?(user, password)
+      tested_password = BCrypt::Password.new(user.password_hash)
+      tested_password == user.salt + password
+    end
   end
 end

@@ -2,7 +2,7 @@
 
 module Web
   # Handler for start page
-  class HomeController < ApplicationController
+  class HomeController < Web::ApplicationController
     def index
       render
     end
