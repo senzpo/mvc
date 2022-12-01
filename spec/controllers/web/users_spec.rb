@@ -6,21 +6,21 @@ RSpec.describe 'Web::UsersController' do
   let(:app) { Application.new }
   let(:password) { 'awesome_pass' }
 
-  let(:user_attributes) {
+  let(:user_attributes) do
     {
       email: 'example@example.com',
       password: password,
       password_confirmation: password
     }
-  }
+  end
 
-  let(:invalid_user_attributes) {
+  let(:invalid_user_attributes) do
     {
       email: 'example@example.com',
       password: password,
       password_confirmation: "_#{password}"
     }
-  }
+  end
 
   it 'create' do
     number_of_users = ApplicationRepository::DB[:users].count
