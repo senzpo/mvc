@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Web
+  class UnauthorizedError < StandardError; end
+
   # Web controller with current_user methods
   class ApplicationController < ::ApplicationController
     def current_user
@@ -13,10 +15,8 @@ module Web
     def render(*args)
       @current_user = current_user
       super
-    rescue Application::NotFoundError
-      render 404_page
-    rescue UnAuthError
-      redirect
+    rescue UnauthorizedError
+      head 302, headers: { 'Location' => '/login' }
     end
   end
 end

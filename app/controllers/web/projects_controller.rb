@@ -14,7 +14,7 @@ module Web
     end
 
     def authenticate_user!
-      raise UnAuthError unless current_user
+      raise UnauthorizedError unless current_user
     end
   end
 end
