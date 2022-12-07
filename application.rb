@@ -25,6 +25,8 @@ class Application
 
     controller = result.controller.new(env, result.params, request)
     controller.resolve(result.action)
+  rescue NotFoundError
+    Web::ErrorsController.new(env, result, request).resolve(:_404)
   end
 end
 
