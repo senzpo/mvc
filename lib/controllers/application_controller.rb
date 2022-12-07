@@ -11,9 +11,9 @@ class ApplicationController
   attr_accessor :env
   attr_reader :action, :params, :request
 
-  def self.before_action!(fn)
+  def self.before_action(*methods)
     define_method :before_action do
-      send(fn)
+      methods.each { |method| send(method) }
     end
   end
 
