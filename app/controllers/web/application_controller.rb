@@ -12,9 +12,8 @@ module Web
       UserRepository.all(id: session[:user_id]).first
     end
 
-    def render(*args)
-      @current_user = current_user
-      super
+    def resolve(action)
+      super(action)
     rescue UnauthorizedError
       head 302, headers: { 'Location' => '/login' }
     end

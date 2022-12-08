@@ -24,14 +24,13 @@ class ApplicationController
   end
 
   def resolve(action)
+    before_action if respond_to?(:before_action)
+
     @action = action
     send(action)
   end
 
   def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT)
-    if respond_to?(:before_action)
-      before_action
-    end
     return [code, headers, [body]] unless body.nil?
 
     body = prepare_body(layout, template_path(action))

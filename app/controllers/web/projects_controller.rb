@@ -13,6 +13,8 @@ module Web
       render
     end
 
+    private
+
     def authenticate_user!
       raise UnauthorizedError unless current_user
     end

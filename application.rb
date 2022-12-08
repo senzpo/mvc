@@ -4,8 +4,6 @@ require 'yaml'
 
 # Rack friendly launcher for project
 class Application
-  class NotFoundError < StandardError; end
-
   # Main application config
   class Config
     def self.env
@@ -20,13 +18,8 @@ class Application
   def call(env)
     request = Rack::Request.new(env)
     result = @router.resolve(request.path, request.request_method)
-
-    raise NotFoundError if result.nil?
-
     controller = result.controller.new(env, result.params, request)
     controller.resolve(result.action)
-  rescue NotFoundError
-    Web::ErrorsController.new(env, result, request).resolve(:_404)
   end
 end
 

@@ -21,4 +21,6 @@ lambda do
 
   get '/projects', to: 'web#projects#index'
   get '/projects/:id', to: 'web#projects#show'
+
+  any to: 'web#errors#_404'
 end

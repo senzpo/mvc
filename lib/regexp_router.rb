@@ -13,6 +13,7 @@ class RegexpRouter
 
   # concrete route
   class Route
+    ANY_METHOD = 'any'
     attr_reader :controller, :action, :pattern, :method
 
     def initialize(controller:, action:, pattern:, method:)
@@ -23,6 +24,7 @@ class RegexpRouter
     end
 
     def matched?(path, http_method)
+      return true if method == ANY_METHOD
       return false unless method.to_s == http_method.to_s
 
       pattern_split = pattern.split('/')
@@ -110,6 +112,10 @@ class RegexpRouter
     define_method method do |pattern, options|
       register_route(method, pattern, options)
     end
+  end
+
+  def any(to:)
+    register_route('any', '', to: to)
   end
 
   def register_route(method, pattern, options)
