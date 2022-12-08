@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Web
+  class UnauthorizedError < StandardError; end
+
   # Web controller with current_user methods
   class ApplicationController < ::ApplicationController
     def current_user
@@ -10,9 +12,10 @@ module Web
       UserRepository.all(id: session[:user_id]).first
     end
 
-    def render(*args)
-      @current_user = current_user
-      super
+    def resolve(action)
+      super(action)
+    rescue UnauthorizedError
+      head 302, headers: { 'Location' => '/login' }
     end
   end
 end

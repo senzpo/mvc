@@ -11,6 +11,12 @@ class ApplicationController
   attr_accessor :env
   attr_reader :action, :params, :request
 
+  def self.before_action(*methods)
+    define_method :before_action do
+      methods.each { |method| send(method) }
+    end
+  end
+
   def initialize(env, params, request)
     @env = env
     @params = params
@@ -18,6 +24,8 @@ class ApplicationController
   end
 
   def resolve(action)
+    before_action if respond_to?(:before_action)
+
     @action = action
     send(action)
   end
