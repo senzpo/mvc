@@ -8,11 +8,18 @@ module Web
   class UsersController < Web::ApplicationController
     def create
       contract = UserCreateContract.new.call(request_params)
-
       if contract.failure?
         create_with_errors(contract)
       else
-        create_with_valid_contract(contract)
+        Services::Users::Create.new.call(contract) do |m|
+          m.success do |_|
+            head 303, headers: { 'location' => '/' }
+          end
+
+          m.failure do |_|
+            create_with_errors({})
+          end
+        end
       end
     end
 
