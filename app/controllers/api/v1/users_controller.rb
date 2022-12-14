@@ -42,6 +42,7 @@ module Api
       end
 
       def delete
+        return head 403 unless is_current_user?
         Services::Users::Delete.new.call(params) do |m|
           m.success do |_|
             head 204
@@ -52,6 +53,12 @@ module Api
             head 401
           end
         end
+      end
+
+      private
+
+      def is_current_user?
+        @current_user && @current_user.id == params[:id]
       end
     end
   end

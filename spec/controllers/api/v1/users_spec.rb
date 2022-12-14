@@ -7,6 +7,7 @@ RSpec.describe 'Api::V1::UsersController' do
   let(:user_db_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
   let(:user_attributes) { { email: 'some@example.com', password: 'secret' } }
   let(:user_id) { ApplicationRepository::DB[:users].insert(user_db_attributes) }
+  let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
 
   it 'index' do
     env = Rack::MockRequest.env_for('/api/v1/users', 'REQUEST_METHOD' => 'GET')
@@ -54,11 +55,13 @@ RSpec.describe 'Api::V1::UsersController' do
   end
 
   it 'delete' do
+    ApplicationRepository::DB[:projects].insert(project_attributes.merge({ user_id: user_id }))
     env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}", 'REQUEST_METHOD' => 'DELETE')
     response = app.call(env)
 
     code, = response
     expect(code).to eq 204
     expect(ApplicationRepository::DB[:users].where(id: user_id).count).to eq(0)
+    expect(ApplicationRepository::DB[:projects].where(user_id: user_id).count).to eq(0)
   end
 end
