@@ -42,9 +42,16 @@ module Api
       end
 
       def delete
-        ApplicationRepository::DB[:users].where(id: params[:id]).delete
+        Services::Users::Delete.new.call(params) do |m|
+          m.success do |_|
+            head 204
+          end
 
-        head 204
+          m.failure do |_|
+            # TODO some errors handle here
+            head 401
+          end
+        end
       end
     end
   end
