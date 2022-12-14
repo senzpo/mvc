@@ -40,6 +40,7 @@ RSpec.describe 'Api::V1::UsersController' do
 
   it 'create' do
     number_of_users = ApplicationRepository::DB[:users].count
+    number_of_projects = ApplicationRepository::DB[:projects].count
     env = Rack::MockRequest.env_for('/api/v1/users',
                                     'REQUEST_METHOD' => 'POST',
                                     'CONTENT_TYPE' => 'application/json',
@@ -49,6 +50,7 @@ RSpec.describe 'Api::V1::UsersController' do
     code, = response
     expect(code).to eq 204
     expect(ApplicationRepository::DB[:users].count).to eq(number_of_users + 1)
+    expect(ApplicationRepository::DB[:projects].count).to eq(number_of_projects + 1)
   end
 
   it 'delete' do
