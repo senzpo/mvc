@@ -11,12 +11,11 @@ module Services
       step :validate
       step :create
       step :assign_default_project
-      step :send_welcome_email
 
       private
 
       def validate(params)
-        contract = UserCreateContract.new.call(params)
+        contract = UserCreateServiceContract.new.call(params)
         if contract.success?
           Success(contract)
         else
@@ -29,6 +28,12 @@ module Services
         password_hash = BCrypt::Password.create(salt + contract[:password])
         user_params = contract.to_h.slice(:email).merge({ password_hash: password_hash, salt: salt })
         user = UserRepository.create(user_params)
+        Success(user)
+      end
+
+      def assign_default_project(user)
+        default_project_params = { title: 'New project' }
+        new_project = ProjectRepository.create(default_project_params.merge({ user_id: user.id }))
         Success(user)
       end
     end

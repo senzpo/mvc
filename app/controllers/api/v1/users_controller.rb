@@ -19,9 +19,20 @@ module Api
       end
 
       def create
-        ApplicationRepository::DB[:users].insert(request_params)
+        contract = UserCreateApiContract.new.call(request_params)
+        if contract.failure?
+          render code: 422, body: contract.errors.to_json, headers: { 'content-type' => 'application/json' }
+        else
+          Services::Users::Create.new.call(contract.to_h) do |m|
+            m.success do |_|
+              head 204
+            end
 
-        head 204
+            m.failure do |errors|
+              render code: 422, body: errors.to_json, headers: { 'content-type' => 'application/json' }
+            end
+          end
+        end
       end
 
       def show

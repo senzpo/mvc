@@ -11,13 +11,13 @@ module Web
       if contract.failure?
         create_with_errors(contract)
       else
-        Services::Users::Create.new.call(contract) do |m|
+        Services::Users::Create.new.call(contract.to_h) do |m|
           m.success do |_|
             head 303, headers: { 'location' => '/' }
           end
 
-          m.failure do |_|
-            create_with_errors({})
+          m.failure do |errors|
+            create_with_errors(errors)
           end
         end
       end

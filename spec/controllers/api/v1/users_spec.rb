@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Api::V1::UsersController' do
   let(:app) { Application.new }
-  let(:user_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
-  let(:user_id) { ApplicationRepository::DB[:users].insert(user_attributes) }
+  let(:user_db_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
+  let(:user_attributes) { { email: 'some@example.com', password: 'secret' } }
+  let(:user_id) { ApplicationRepository::DB[:users].insert(user_db_attributes) }
 
   it 'index' do
     env = Rack::MockRequest.env_for('/api/v1/users', 'REQUEST_METHOD' => 'GET')
@@ -39,8 +40,10 @@ RSpec.describe 'Api::V1::UsersController' do
 
   it 'create' do
     number_of_users = ApplicationRepository::DB[:users].count
-    env = Rack::MockRequest.env_for('/api/v1/users', 'REQUEST_METHOD' => 'POST', 'CONTENT_TYPE' => 'application/json',
-                                                     input: user_attributes.to_json)
+    env = Rack::MockRequest.env_for('/api/v1/users',
+                                    'REQUEST_METHOD' => 'POST',
+                                    'CONTENT_TYPE' => 'application/json',
+                                    input: user_attributes.to_json)
     response = app.call(env)
 
     code, = response
