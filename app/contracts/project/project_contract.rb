@@ -5,8 +5,7 @@ class ProjectContract < ApplicationContract
   params do
     required(:title).filled(:string)
     required(:description).maybe(:string)
-    # TODO:
-    # project <-> user db relations, check foreign key
+    # TODO: project <-> user db relations, check foreign key
   end
 
   rule(:title) do

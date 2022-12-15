@@ -9,6 +9,10 @@ class Application
     def self.env
       ENV.fetch('APP_ENV', 'development')
     end
+
+    def self.test?
+      env == 'test'
+    end
   end
 
   def initialize

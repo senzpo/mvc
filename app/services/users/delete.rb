@@ -3,7 +3,7 @@
 # Web interface
 module Services
   module Users
-
+    # Delete user with assets
     class Delete
       include Dry::Transaction
 

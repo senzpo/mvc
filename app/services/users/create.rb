@@ -2,9 +2,11 @@
 
 # Web interface
 module Services
+  # Users services namespace
   module Users
     require 'securerandom'
 
+    # Persist user with default project
     class Create
       include Dry::Transaction
 
@@ -33,7 +35,7 @@ module Services
 
       def assign_default_project(user)
         default_project_params = { title: 'New project' }
-        new_project = ProjectRepository.create(default_project_params.merge({ user_id: user.id }))
+        ProjectRepository.create(default_project_params.merge({ user_id: user.id }))
         Success(user)
       end
     end

@@ -11,15 +11,7 @@ module Web
       if contract.failure?
         create_with_errors(contract)
       else
-        Services::Users::Create.new.call(contract.to_h) do |m|
-          m.success do |_|
-            head 303, headers: { 'location' => '/' }
-          end
-
-          m.failure do |errors|
-            create_with_errors(errors)
-          end
-        end
+        create_with_valid_contract(contract)
       end
     end
 
@@ -31,11 +23,10 @@ module Web
     end
 
     def create_with_valid_contract(contract)
-      salt = SecureRandom.hex(4)
-      password_hash = BCrypt::Password.create(salt + contract[:password])
-      user_params = contract.to_h.slice(:email).merge({ password_hash: password_hash, salt: salt })
-      UserRepository.create(user_params)
-      head 303, headers: { 'location' => '/' }
+      Services::Users::Create.new.call(contract.to_h) do |m|
+        m.success { head 303, headers: { 'location' => '/' } }
+        m.failure { |errors| create_with_errors(errors) }
+      end
     end
   end
 end

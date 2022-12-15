@@ -3,7 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Api::V1::UsersController' do
-  let(:app) { Application.new }
+  let(:app) do
+    Rack::Builder.new do |builder|
+      builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
+                                         secret: SecureRandom.hex(64)
+      builder.run Application.new
+    end
+  end
+
   let(:user_db_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
   let(:user_attributes) { { email: 'some@example.com', password: 'secret' } }
   let(:user_id) { ApplicationRepository::DB[:users].insert(user_db_attributes) }
@@ -57,6 +64,7 @@ RSpec.describe 'Api::V1::UsersController' do
   it 'delete' do
     ApplicationRepository::DB[:projects].insert(project_attributes.merge({ user_id: user_id }))
     env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}", 'REQUEST_METHOD' => 'DELETE')
+    env['test'] = { 'user_id' => user_id }
     response = app.call(env)
 
     code, = response

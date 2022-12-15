@@ -3,7 +3,7 @@
 module Api
   module V1
     # Provides handlers for managing users via API v1
-    class UsersController < ApplicationController
+    class UsersController < ActionController
       def index
         users = ApplicationRepository::DB[:users].all
 
@@ -23,15 +23,7 @@ module Api
         if contract.failure?
           render code: 422, body: contract.errors.to_json, headers: { 'content-type' => 'application/json' }
         else
-          Services::Users::Create.new.call(contract.to_h) do |m|
-            m.success do |_|
-              head 204
-            end
-
-            m.failure do |errors|
-              render code: 422, body: errors.to_json, headers: { 'content-type' => 'application/json' }
-            end
-          end
+          create_with_valid_contract(contract)
         end
       end
 
@@ -42,14 +34,15 @@ module Api
       end
 
       def delete
-        return head 403 unless is_current_user?
+        return head 403 unless same_user?
+
         Services::Users::Delete.new.call(params) do |m|
           m.success do |_|
             head 204
           end
 
           m.failure do |_|
-            # TODO some errors handle here
+            # TODO: some errors handle here
             head 401
           end
         end
@@ -57,8 +50,17 @@ module Api
 
       private
 
-      def is_current_user?
-        @current_user && @current_user.id == params[:id]
+      def same_user?
+        current_user && current_user.id.to_s == params[:id]
+      end
+
+      def create_with_valid_contract(contract)
+        Services::Users::Create.new.call(contract.to_h) do |m|
+          m.success { head 204 }
+          m.failure do |errors|
+            render code: 422, body: errors.to_json, headers: { 'content-type' => 'application/json' }
+          end
+        end
       end
     end
   end

@@ -18,6 +18,6 @@ class UserRepository < ApplicationRepository
   # end
 
   def self.delete(id)
-    updated_count = ApplicationRepository::DB[:users].where(id: id).delete
+    ApplicationRepository::DB[:users].where(id: id).delete
   end
 end

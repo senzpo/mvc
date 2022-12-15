@@ -3,7 +3,7 @@
 module Api
   module V1
     # Provides handlers for managing projects via API v1
-    class ProjectsController < ApplicationController
+    class ProjectsController < ActionController
       def index
         projects = ProjectRepository.all
 

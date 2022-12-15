@@ -15,6 +15,7 @@ module Web
 
       session = env['rack.session']
       session[:user_id] = user.id
+
       head 302, headers: { 'Location' => '/' }
     end
 
