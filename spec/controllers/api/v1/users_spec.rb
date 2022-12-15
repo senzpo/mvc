@@ -57,7 +57,7 @@ RSpec.describe 'Api::V1::UsersController' do
   it 'delete' do
     ApplicationRepository::DB[:projects].insert(project_attributes.merge({ user_id: user_id }))
     env = Rack::MockRequest.env_for("/api/v1/users/#{user_id}", 'REQUEST_METHOD' => 'DELETE')
-    env['test'] = { 'user_id' => user_id }
+    env['rack.session'] = { user_id: user_id }
     response = app.call(env)
 
     code, = response
