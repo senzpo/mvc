@@ -3,13 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Web::SessionsController' do
-  let(:app) do
-    Rack::Builder.new do |builder|
-      builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
-                                         secret: SecureRandom.hex(64)
-      builder.run Application.new
-    end
-  end
+  let(:app) { Application.launch }
   let(:password) { 'awesome_pass' }
   let(:password_hash) { '$2a$12$IsIjIHptwtYatJU7UXHOzu5praukAbElPvkc3i5i/3wJGBCP/5xKq' }
   let(:salt) { '1960874c' }

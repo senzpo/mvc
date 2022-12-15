@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Web::UsersController' do
-  let(:app) { Application.new }
+  let(:app) { Application.launch }
   let(:password) { 'awesome_pass' }
 
   let(:user_attributes) do

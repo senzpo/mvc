@@ -19,6 +19,14 @@ class Application
     @router = RegexpRouter.new(File.join(File.dirname(__FILE__), 'app', 'config', 'routes.rb'))
   end
 
+  def self.launch
+    Rack::Builder.new do |builder|
+      builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
+                                         secret: SecureRandom.hex(64)
+      builder.run Application.new
+    end
+  end
+
   def call(env)
     request = Rack::Request.new(env)
     result = @router.resolve(request.path, request.request_method)
