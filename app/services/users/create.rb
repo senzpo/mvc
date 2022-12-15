@@ -10,6 +10,8 @@ module Services
     class Create
       include Dry::Transaction
 
+      around :db_transaction
+
       step :validate
       step :create
       step :assign_default_project
@@ -37,6 +39,12 @@ module Services
         default_project_params = { title: 'New project' }
         ProjectRepository.create(default_project_params.merge({ user_id: user.id }))
         Success(user)
+      end
+
+      def db_transaction(input, &block)
+        ApplicationRepository::DB.transaction do
+          block.call(Success(input))
+        end
       end
     end
   end

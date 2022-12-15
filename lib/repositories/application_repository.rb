@@ -11,4 +11,6 @@ class ApplicationRepository
   end
 
   DB = Sequel.connect(db_config['db']['connection_line'])
+  DB.loggers << Logger.new($stdout)
+  DB.sql_log_level = :debug
 end
