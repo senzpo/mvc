@@ -2,8 +2,8 @@
 
 # Repository layer for Project
 class ProjectRepository < ApplicationRepository
-  def self.all
-    ApplicationRepository::DB[:projects].all.map { |p| Project.new(p) }
+  def self.all(params = {})
+    ApplicationRepository::DB[:projects].where(params).map { |p| Project.new(p) }
   end
 
   def self.find(id)

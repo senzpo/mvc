@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Validation for project model
+# Validation for users model created from web
 class UserCreateContract < ApplicationContract
   params do
     required(:email).filled(:string)
