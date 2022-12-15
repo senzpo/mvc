@@ -16,4 +16,11 @@ RSpec.configure do |config|
   config.after(:suite) do
     `rake db:drop`
   end
+
+  config.around(:example) do |ex|
+    ApplicationRepository::DB.transaction do
+      ex.run
+      ApplicationRepository::DB.rollback_on_exit
+    end
+  end
 end
