@@ -8,6 +8,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
   let(:invalid_project_attributes) { { title: 'T', description: nil } }
 
   it 'index' do
+    puts ">>>>>>>>>>> object_id #{object_id}"
     env = Rack::MockRequest.env_for('/api/v1/projects', 'REQUEST_METHOD' => 'GET')
     response = app.call(env)
 

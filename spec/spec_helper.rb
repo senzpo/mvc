@@ -9,15 +9,11 @@ require './application'
 
 RSpec.configure do |config|
   config.before(:suite) do
-    `rake db:create`
-    `rake db:migrate`
+    Sequel.extension :migration
+    Sequel::Migrator.run(ApplicationRepository::DB, 'db/migrations')
   end
 
-  config.after(:suite) do
-    `rake db:drop`
-  end
-
-  config.around(:example) do |ex|
+  config.around do |ex|
     ApplicationRepository::DB.transaction do
       ex.run
       ApplicationRepository::DB.rollback_on_exit

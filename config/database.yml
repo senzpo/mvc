@@ -8,5 +8,5 @@ test:
   db:
     name: 'blog.db'
     adapter: 'sqlite'
-    connection_line: 'sqlite://temp/test_blog.db'
+    connection_line: 'sqlite:/'
     path: './temp/test_blog.db'
