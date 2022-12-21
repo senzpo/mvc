@@ -1,9 +1,18 @@
-h1 SignUp page
-form[method="post" action="/users"]
-  label[for="email"] Email
-  input[name="email" type="email"]
-  label[for="password"] Password
-  input[name="password" type="password"]
-  label[for="password_confirmation"] Password confirmation
-  input[name="password_confirmation" type="password"]
-  input[type="submit"]
+h1 SignUp
+.row.text-center.justify-content-md-center
+  .col-4
+    form[method="post" action="/users"]
+      .mb-3
+        label.form-label[for="inputEmail"]
+          | Email
+        input#inputEmail.form-control[name="email" type="email"]
+      .mb-3
+        label.form-label[for="inputPassword"]
+          | Password
+        input#inputPassword.form-control[name="password" type="password"]
+      .mb-3
+        label.form-label[for="inputPasswordConfirmation"]
+          | Password confirmation
+        input#inputPasswordConfirmation.form-control[name="password_confirmation" type="password"]
+      button.btn.btn-primary[type="submit"]
+        | Sign up

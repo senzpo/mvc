@@ -1,9 +1,24 @@
 h1 Some errors found
-form[method="post" action="/users"]
-  label[for="email"] Email(#{@params[:errors][:email]})
-  input[name="email" type="email" value=@params[:user][:email] ]
-  label[for="password"] Password(#{@params[:errors][:password]})
-  input[name="password" type="password"]
-  label[for="password_confirmation"] Password confirmation(#{@params[:errors][:password_confirmation]})
-  input[name="password_confirmation" type="password"]
-  input[type="submit"]
+.row.text-center.justify-content-md-center
+  .col-4
+    form[method="post" action="/users"]
+      .mb-3
+        label.form-label[for="inputEmail"]
+          | Email#{@params[:errors][:email]}
+        input#inputEmail.form-control[name="email" type="email" value=@params[:user][:email] ]
+        - if @params[:errors][:email]
+          p.text-danger.fst-italic.text-end #{@params[:errors][:email].join(' ')}
+      .mb-3
+        label.form-label[for="inputPassword"]
+          | Password
+        input#inputPassword.form-control[name="password" type="password"]
+        - if @params[:errors][:password]
+          p.text-danger.fst-italic.text-end #{@params[:errors][:password].join(' ')}
+      .mb-3
+        label.form-label[for="inputPasswordConfirmation"]
+          | Password confirmation
+        input#inputPasswordConfirmation.form-control[name="password_confirmation" type="password"]
+        - if @params[:errors][:password_confirmation]
+          p.text-danger.fst-italic.text-end #{@params[:errors][:password_confirmation].join(' ')}
+      button.btn.btn-primary[type="submit"]
+        | Sign up
