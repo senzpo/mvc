@@ -20,6 +20,11 @@ html[lang="en"]
         span.fs-4
           | CJM
       nav.d-inline-flex.mt-2.mt-md-0.ms-md-auto
+      - if current_user
+        form[method="post" action="/logout"]
+          button.btn.btn-outline-primary[type="submit"]
+            | Logout
+      - else
         a.me-3.py-2.text-dark.text-decoration-none[href="/login"]
           | Login
         a.me-3.py-2.text-dark.text-decoration-none[href="/signup"]

@@ -18,6 +18,7 @@ lambda do
   post '/users', to: 'web#users#create'
   get '/login', to: 'web#sessions#new'
   post '/sessions', to: 'web#sessions#create'
+  post '/logout', to: 'web#sessions#delete'
 
   get '/projects', to: 'web#projects#index'
   get '/projects/:id', to: 'web#projects#show'

@@ -19,6 +19,12 @@ module Web
       head 302, headers: { 'Location' => '/' }
     end
 
+    def delete
+      session = env['rack.session']
+      session[:user_id] = nil if session
+      head 302, headers: { 'Location' => '/' }
+    end
+
     private
 
     def get_user(email)
