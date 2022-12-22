@@ -11,7 +11,7 @@ module Web
     end
 
     def index
-      @projects = ProjectRepository.all({user_id: current_user.id})
+      @projects = ProjectRepository.all({ user_id: current_user.id })
       render
     end
 
@@ -22,10 +22,10 @@ module Web
     def create
       project_params = request_params.merge(user_id: current_user.id)
       Services::Projects::Create.new.call(project_params) do |m|
-        m.success { head 303, headers: { 'location' => '/projects' } }
+        m.success { head 303, headers: { 'Location' => '/projects' } }
         m.failure do |errors|
           @params = { project: request_params, errors: errors.errors.to_h }
-          render template: "./app/views/web/projects/new.slim"
+          render template: './app/views/web/projects/new.slim'
         end
       end
     end

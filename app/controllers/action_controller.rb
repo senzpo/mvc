@@ -6,7 +6,7 @@ class ActionController < ApplicationController
 
   def current_user
     session = env['rack.session']
-    UserRepository.all({id: session[:user_id]}).first
+    UserRepository.all({ id: session[:user_id] }).first
   end
 
   private

@@ -6,7 +6,7 @@ require 'bundler'
 Bundler.require
 
 require './application'
-require './spec/support/session_helper.rb'
+require './spec/support/session_helper'
 
 RSpec.configure do |config|
   config.before(:suite) do
