@@ -36,6 +36,23 @@ namespace :db do
   end
 end
 
+namespace :app do
+  desc 'Run controllers test'
+  task :console do
+    require 'rubygems'
+    require 'bundler'
+    require 'securerandom'
+    require 'irb'
+
+    Bundler.require
+
+    require './application'
+
+    ARGV.clear
+    IRB.start
+  end
+end
+
 namespace :test do
   require 'rake'
   require 'rspec/core/rake_task'
