@@ -26,7 +26,7 @@ module Api
       end
 
       def update
-        contract = ProjectContract.new.call(request_params)
+        contract = ProjectContract.new.call(request_params.merge(user_id: current_user.id))
         if contract.success?
           ProjectRepository.update(params[:id], contract.to_h)
 
