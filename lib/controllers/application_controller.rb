@@ -30,10 +30,10 @@ class ApplicationController
     send(action)
   end
 
-  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT)
+  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT, template: nil)
     return [code, headers, [body]] unless body.nil?
 
-    body = prepare_body(layout, template_path(action))
+    body = prepare_body(layout, template || template_path(action))
     [code, headers, [body]]
   end
 

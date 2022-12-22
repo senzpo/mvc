@@ -4,7 +4,7 @@ h1 Some errors found
     form[method="post" action="/users"]
       .mb-3
         label.form-label[for="inputEmail"]
-          | Email#{@params[:errors][:email]}
+          | Email
         input#inputEmail.form-control[name="email" type="email" value=@params[:user][:email] ]
         - if @params[:errors][:email]
           p.text-danger.fst-italic.text-end #{@params[:errors][:email].join(' ')}

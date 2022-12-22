@@ -21,7 +21,9 @@ lambda do
   post '/logout', to: 'web#sessions#delete'
 
   get '/projects', to: 'web#projects#index'
+  get '/projects/new', to: 'web#projects#new'
   get '/projects/:id', to: 'web#projects#show'
+  post '/projects', to: 'web#projects#create'
 
   any to: 'web#errors#_404'
 end

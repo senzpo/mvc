@@ -2,8 +2,17 @@
 
 # Repository layer for User
 class UserRepository < ApplicationRepository
-  def self.all(params = {})
-    ApplicationRepository::DB[:users].where(params).map { |p| User.new(p) }
+  def self.all(params = {}, includes: [])
+    users = ApplicationRepository::DB[:users].where(params).to_a
+
+    user_ids = users.map { |user| user[:id] }
+    relations = {}
+    relations[:projects] = ProjectRepository.all(user_id: user_ids) if includes.include?(:projects)
+
+    users.map do |user|
+      user.merge!(projects: relations[:projects].select { |p| p.user_id == user[:id] }) if includes.include?(:projects)
+      User.new(user)
+    end
   end
 
   def self.create(user_params)

@@ -5,7 +5,13 @@ module Web
   class ProjectsController < Web::ApplicationController
     before_action :authenticate_user!
 
+    def new
+      @params = { project: {} }
+      render
+    end
+
     def index
+      @projects = ProjectRepository.all({user_id: current_user.id})
       render
     end
 
@@ -13,10 +19,15 @@ module Web
       render
     end
 
-    private
-
-    def authenticate_user!
-      raise UnauthorizedError unless current_user
+    def create
+      project_params = request_params.merge(user_id: current_user.id)
+      Services::Projects::Create.new.call(project_params) do |m|
+        m.success { head 303, headers: { 'location' => '/projects' } }
+        m.failure do |errors|
+          @params = { project: request_params, errors: errors.errors.to_h }
+          render template: "./app/views/web/projects/new.slim"
+        end
+      end
     end
   end
 end

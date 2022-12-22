@@ -1,0 +1,18 @@
+table.table
+  thead
+    tr
+      th[scope="col"]
+        | #
+      th[scope="col"]
+        | Title
+      th[scope="col"]
+        | Description
+  tbody
+    - @projects.each do |project|
+      tr
+        th[scope="row"]
+          = project.id
+        td
+          = project.title
+        td
+          = project.description

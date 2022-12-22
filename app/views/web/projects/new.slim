@@ -1,0 +1,18 @@
+h1 New project
+.row.text-center.justify-content-md-center
+  .col-4
+    form[method="post" action="/projects"]
+      .mb-3
+        label.form-label[for="inputTitle"]
+          | Title
+          - if @params[:errors] && @params[:errors][:title]
+            p.text-danger.fst-italic.text-end #{@params[:errors][:title].join(' ')}
+        input#inputTitle.form-control[name="title" value=@params[:project][:title]]
+      .mb-3
+        label.form-label[for="inputDescription"]
+          | Description
+          - if @params[:errors] && @params[:errors][:description]
+            p.text-danger.fst-italic.text-end #{@params[:errors][:description].join(' ')}
+        input#inputDescription.form-control[name="description" value=@params[:project][:description]]
+      button.btn.btn-primary[type="submit"]
+        | Create
