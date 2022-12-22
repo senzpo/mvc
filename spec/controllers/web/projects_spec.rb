@@ -3,13 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Web::ProjectsController' do
-  let(:app) do
-    Rack::Builder.new do |builder|
-      builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
-                                         secret: SecureRandom.hex(64)
-      builder.run Application.new
-    end
-  end
+  let(:app) { Application.launch }
 
   it 'index for unauthorized user' do
     env = Rack::MockRequest.env_for('/projects', 'REQUEST_METHOD' => 'GET')

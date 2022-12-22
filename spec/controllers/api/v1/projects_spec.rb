@@ -3,13 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Api::V1::ProjectsController' do
-  let(:app) do
-    Rack::Builder.new do |builder|
-      builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
-                                         secret: SecureRandom.hex(64)
-      builder.run Application.new
-    end
-  end
+  let(:app) { Application.launch }
   let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
   let(:invalid_project_attributes) { { title: 'T', description: nil } }
 
