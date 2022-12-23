@@ -47,7 +47,7 @@ module Api
       end
 
       def show
-        project = ProjectRepository.find(params[:id])
+        project = ProjectRepository.find(id: params[:id], user_id: current_user.id)
 
         render body: project.to_h.to_json, headers: { 'content-type' => 'application/json' }
       rescue ApplicationRepository::NotFoundRecord

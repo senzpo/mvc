@@ -55,4 +55,14 @@ RSpec.describe 'Web::ProjectsController' do
     expect(headers['Location']).to eq('/projects')
     expect(ApplicationRepository::DB[:projects].count).to eq(number_of_projects + 1)
   end
+
+  it 'delete' do
+    env = Rack::MockRequest.env_for("/projects/#{project_id}/delete", 'REQUEST_METHOD' => 'POST')
+    login(env, user_id)
+    response = app.call(env)
+    code, headers = response
+    expect(code).to eq 303
+    expect(headers['Location']).to eq('/projects')
+    expect(ApplicationRepository::DB[:projects].where(id: project_id).first).to eq nil
+  end
 end

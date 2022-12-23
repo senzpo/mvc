@@ -1,3 +1,10 @@
+nav[aria-label="breadcrumb"]
+  ol.breadcrumb
+    li.breadcrumb-item.active[aria-current="page"]
+      | Projects
+a.btn.btn-outline-primary[href="/projects/new"]
+  | New project
+
 table.table
   thead
     tr
@@ -7,12 +14,18 @@ table.table
         | Title
       th[scope="col"]
         | Description
+      th[scope="col"]
   tbody
     - @projects.each do |project|
       tr
         th[scope="row"]
           = project.id
         td
-          = project.title
+          a[href="/projects/#{project.id}"]
+            = project.title
         td
           = project.description
+        td
+          form[method="post" action="/projects/#{project.id}/delete"]
+            button.btn.btn-danger[type="submit"]
+              | Delete

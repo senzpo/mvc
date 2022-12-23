@@ -6,8 +6,8 @@ class ProjectRepository < ApplicationRepository
     ApplicationRepository::DB[:projects].where(params).map { |p| Project.new(p) }
   end
 
-  def self.find(id)
-    p = ApplicationRepository::DB[:projects].where(id: id).first
+  def self.find(params)
+    p = ApplicationRepository::DB[:projects].where(params).first
     raise NotFoundRecord if p.nil?
 
     Project.new(p)

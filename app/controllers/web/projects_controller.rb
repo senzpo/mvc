@@ -16,7 +16,14 @@ module Web
     end
 
     def show
+      @project = ProjectRepository.find(id: params[:id], user_id: current_user.id)
       render
+    end
+
+    def delete
+      project = ProjectRepository.find(id: params[:id], user_id: current_user.id)
+      Services::Projects::Delete.new.call(project) unless project.nil?
+      head 303, headers: { 'Location' => '/projects' }
     end
 
     def create
