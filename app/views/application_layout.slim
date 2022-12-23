@@ -24,12 +24,12 @@ html[lang="en"]
             a.nav-link[href="/projects"]
               | Projects
         form[method="post" action="/logout"]
-          button.btn.btn-outline-primary[type="submit"]
+          button.btn.btn-outline-danger[type="submit"]
             | Logout
       - else
-        a.me-3.py-2.text-dark.text-decoration-none[href="/login"]
+        a.btn.btn-outline-primary.me-3.py-2[href="/login"]
           | Login
-        a.me-3.py-2.text-dark.text-decoration-none[href="/signup"]
+        a.btn.btn-outline-primary.me-3.py-2[href="/signup"]
           | SignUp
   main
     == yield
