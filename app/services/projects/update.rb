@@ -4,12 +4,12 @@
 module Services
   # Projects services namespace
   module Projects
-    # Create project
-    class Create
+    # Update project
+    class Update
       include Dry::Transaction
 
       step :validate
-      step :create
+      step :update
 
       private
 
@@ -22,9 +22,9 @@ module Services
         end
       end
 
-      def create(contract)
+      def update(contract, project:)
         project_params = contract.to_h.slice(:title, :description, :user_id)
-        project = ProjectRepository.create(project_params)
+        project = ProjectRepository.update(project.id, project_params)
         Success(project)
       end
     end

@@ -23,6 +23,8 @@ lambda do
   get '/projects', to: 'web#projects#index'
   get '/projects/new', to: 'web#projects#new'
   get '/projects/:id', to: 'web#projects#show'
+  post '/projects/:id', to: 'web#projects#update'
+  get '/projects/:id/edit', to: 'web#projects#edit'
   post '/projects/:id/delete', to: 'web#projects#delete'
   post '/projects', to: 'web#projects#create'
 

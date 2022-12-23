@@ -65,4 +65,27 @@ RSpec.describe 'Web::ProjectsController' do
     expect(headers['Location']).to eq('/projects')
     expect(ApplicationRepository::DB[:projects].where(id: project_id).first).to eq nil
   end
+
+  it 'edit' do
+    env = Rack::MockRequest.env_for("/projects/#{project_id}/edit", 'REQUEST_METHOD' => 'GET')
+    login(env, user_id)
+    response = app.call(env)
+    code, = response
+    expect(code).to eq 200
+  end
+
+  it 'update' do
+    title = 'New project title'
+    env = Rack::MockRequest.env_for(
+      "/projects/#{project_id}",
+      'REQUEST_METHOD' => 'POST',
+      params: { title: title }
+    )
+    login(env, user_id)
+    response = app.call(env)
+    code, headers = response
+    expect(code).to eq 303
+    expect(headers['Location']).to eq("/projects/#{project_id}")
+    expect(ApplicationRepository::DB[:projects].where(id: project_id).first[:title]).to eq(title)
+  end
 end

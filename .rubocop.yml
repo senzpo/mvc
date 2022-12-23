@@ -19,7 +19,7 @@ RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 19
+  Max: 20
 
 Naming/PredicateName:
   AllowedMethods:

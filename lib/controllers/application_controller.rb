@@ -52,6 +52,10 @@ class ApplicationController
       end
   end
 
+  def render_partial(name, options = {}, &block)
+    Slim::Template.new("#{name}.slim", options).render(self, &block)
+  end
+
   private
 
   def template_path(action)
