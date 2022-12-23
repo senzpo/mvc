@@ -2,6 +2,36 @@ ol.breadcrumb
   li.breadcrumb-item.active[aria-current="page"]
     | Home
 
-h1 Home page
 - if current_user
-  p.text-muted Logged in as #{current_user.email}
+  .container.mt-5
+    .row.d-flex.justify-content-center
+      .col-md-7
+        .card.p-3.py-4
+          .text-center
+            - gravatar_hash = Digest::MD5.hexdigest(current_user.email)
+            img.rounded-circle[src="https://www.gravatar.com/avatar/#{gravatar_hash}?s=200" width="100"]
+          .text-center.mt-3
+            span.bg-secondary.p-1.px-4.rounded.text-white
+              | ID:
+              = current_user.id
+            h5.mt-2.mb-0
+              - if @projects.count > 0
+                | Has
+                | &nbsp;
+                = @projects.count
+                | &nbsp;
+                a[href="/projects"]
+                  = "projects"
+              - else
+                a[href="/projects/new"]
+                  | Create project
+            span
+              a[href="mailto: #{current_user.email}"]
+                = current_user.email
+            .px-4.mt-1
+              p.fonts
+                | Some text
+            .buttons
+              form[method="post" action="/users/delete"]
+                button.btn.btn-outline-danger[type="submit"]
+                  | Delete my profile

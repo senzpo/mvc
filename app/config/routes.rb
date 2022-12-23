@@ -16,6 +16,7 @@ lambda do
   get '/', to: 'web#home#index'
   get '/signup', to: 'web#home#signup'
   post '/users', to: 'web#users#create'
+  post '/users/delete', to: 'web#users#delete'
   get '/login', to: 'web#sessions#new'
   post '/sessions', to: 'web#sessions#create'
   post '/logout', to: 'web#sessions#delete'

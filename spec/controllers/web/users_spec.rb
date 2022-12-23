@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Web::UsersController' do
   let(:app) { Application.launch }
   let(:password) { 'awesome_pass' }
-
+  let(:user_db_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
+  let(:user_id) { ApplicationRepository::DB[:users].insert(user_db_attributes) }
   let(:user_attributes) do
     {
       email: 'example@example.com',
@@ -51,5 +52,16 @@ RSpec.describe 'Web::UsersController' do
     code, = response
     expect(code).to eq 200
     expect(ApplicationRepository::DB[:users].count).to eq(number_of_users)
+  end
+
+  it 'destroy' do
+    env = Rack::MockRequest.env_for('/users/delete', 'REQUEST_METHOD' => 'POST')
+    login(env, user_id)
+    response = app.call(env)
+
+    code, headers = response
+    expect(code).to eq 303
+    expect(headers['Location']).to eq '/'
+    expect(ApplicationRepository::DB[:users].where(id: user_id).count).to eq(0)
   end
 end
