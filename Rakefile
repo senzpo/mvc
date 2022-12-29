@@ -31,7 +31,7 @@ namespace :db do
   desc 'Rollback database'
   task :rollback do
     Sequel.extension :migration
-    steps = ENV['STEPS'].to_i || 1
+    steps = ENV['STEPS'].nil? ? 1 : ENV['STEPS'].to_i
     Sequel::Migrator.run(ApplicationRepository::DB, 'db/migrations', relative: steps * -1)
   end
 end
