@@ -15,6 +15,20 @@ module Web
       end
     end
 
+    def delete
+      return head 303, headers: { 'Location' => '/' } if current_user.nil?
+
+      Services::Users::Delete.new.call(id: current_user.id) do |m|
+        m.success do |_|
+          head 303, headers: { 'Location' => '/' }
+        end
+
+        m.failure do |_|
+          head 303, headers: { 'Location' => '/' }
+        end
+      end
+    end
+
     private
 
     def create_with_errors(contract)

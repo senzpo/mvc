@@ -6,6 +6,7 @@ require 'bundler'
 Bundler.require
 
 require './application'
+require './spec/support/session_helper'
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -19,4 +20,6 @@ RSpec.configure do |config|
       ApplicationRepository::DB.rollback_on_exit
     end
   end
+
+  config.include SessionHelper
 end

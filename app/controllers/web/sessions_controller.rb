@@ -28,7 +28,7 @@ module Web
     private
 
     def get_user(email)
-      UserRepository.all(email: email).first
+      UserRepository.all({ email: email }).first
     end
 
     def valid_password?(user, password)

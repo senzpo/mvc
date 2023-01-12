@@ -1,0 +1,18 @@
+nav[aria-label="breadcrumb"]
+  ol.breadcrumb
+    li.breadcrumb-item
+      a[href="/projects"]
+        | Projects
+    li.breadcrumb-item
+      a[href="/projects/#{@project.id}"]
+        = @project.title
+    li.breadcrumb-item.active[aria-current="page"]
+      | Edit
+
+h1 Edit project
+.row.text-center.justify-content-md-center
+  .col-4
+    form[method="post" action="/projects/#{@project.id}"]
+      == render_partial('./app/views/web/projects/_form')
+      button.btn.btn-primary[type="submit"]
+        | Update

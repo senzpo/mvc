@@ -1,0 +1,34 @@
+nav[aria-label="breadcrumb"]
+  ol.breadcrumb
+    li.breadcrumb-item.active[aria-current="page"]
+      | Projects
+a.btn.btn-outline-primary[href="/projects/new"]
+  | New project
+
+table.table.table-responsive
+  thead
+    tr
+      th[scope="col"]
+        | #
+      th[scope="col"]
+        | Title
+      th[scope="col"]
+        | Description
+      th[scope="col"]
+  tbody
+    - @projects.each do |project|
+      tr
+        th[scope="row"]
+          = project.id
+        td
+          a[href="/projects/#{project.id}"]
+            = project.title
+        td
+          = project.description && project.description.length > 100 ? "#{project.description[0..100]}..." : nil
+        td
+          .btn-toolbar
+            a.btn.btn-outline-primary.me-2[href="/projects/#{project.id}/edit"]
+              | Edit
+            form[method="post" action="/projects/#{project.id}/delete"]
+              button.btn.btn-danger[type="submit"]
+                | Delete

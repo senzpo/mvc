@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module Web
-  class UnauthorizedError < StandardError; end
-
   # Web controller with current_user methods
   class ApplicationController < ActionController
     def resolve(action)

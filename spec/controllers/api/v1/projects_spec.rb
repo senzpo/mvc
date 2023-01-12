@@ -4,11 +4,14 @@ require 'spec_helper'
 
 RSpec.describe 'Api::V1::ProjectsController' do
   let(:app) { Application.launch }
+  let(:user_db_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
+  let(:user_id) { ApplicationRepository::DB[:users].insert(user_db_attributes) }
   let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
   let(:invalid_project_attributes) { { title: 'T', description: nil } }
 
   it 'index' do
     env = Rack::MockRequest.env_for('/api/v1/projects', 'REQUEST_METHOD' => 'GET')
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -23,6 +26,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       'CONTENT_TYPE' => 'application/json',
       input: project_attributes.to_json
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -38,6 +42,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       'CONTENT_TYPE' => 'application/json',
       input: invalid_project_attributes.to_json
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -46,7 +51,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
   end
 
   it 'update' do
-    ApplicationRepository::DB[:projects].insert(project_attributes)
+    ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
 
     project = ApplicationRepository::DB[:projects].where(project_attributes).first
     new_title = "updated #{project[:title]}"
@@ -59,6 +64,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       'CONTENT_TYPE' => 'application/json',
       input: new_attributes.to_json
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -76,6 +82,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       'CONTENT_TYPE' => 'application/json',
       input: project_attributes.to_json
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -83,7 +90,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
   end
 
   it 'delete' do
-    ApplicationRepository::DB[:projects].insert(project_attributes)
+    ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
 
     project = ApplicationRepository::DB[:projects].where(project_attributes).first
 
@@ -91,6 +98,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       "/api/v1/projects/#{project[:id]}",
       'REQUEST_METHOD' => 'DELETE'
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -104,6 +112,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
       '/api/v1/projects/100500',
       'REQUEST_METHOD' => 'DELETE'
     )
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -111,9 +120,10 @@ RSpec.describe 'Api::V1::ProjectsController' do
   end
 
   it 'show' do
-    ApplicationRepository::DB[:projects].insert(project_attributes)
+    ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
     project = ApplicationRepository::DB[:projects].where(project_attributes).first
     env = Rack::MockRequest.env_for("/api/v1/projects/#{project[:id]}", 'REQUEST_METHOD' => 'GET')
+    login(env, user_id)
     response = app.call(env)
 
     code, = response
@@ -122,6 +132,7 @@ RSpec.describe 'Api::V1::ProjectsController' do
 
   it 'failed to show with 404' do
     env = Rack::MockRequest.env_for('/api/v1/projects/100500', 'REQUEST_METHOD' => 'GET')
+    login(env, user_id)
     response = app.call(env)
 
     code, = response

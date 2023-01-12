@@ -5,4 +5,6 @@ class User < ApplicationModel
   attribute :email, Types::Coercible::String
   attribute :password_hash, Types::Coercible::String
   attribute :salt, Types::Coercible::String
+
+  has_many :projects, class_name: 'Project'
 end

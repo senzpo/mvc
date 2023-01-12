@@ -55,4 +55,18 @@ RSpec.describe 'Web::SessionsController' do
     expect(code).to eq 302
     expect(headers['Location']).to eq('/login')
   end
+
+  it 'delete' do
+    user_id = ApplicationRepository::DB[:users].insert(user_db_attributes)
+    env = Rack::MockRequest.env_for(
+      '/logout',
+      'REQUEST_METHOD' => 'POST'
+    )
+    login(env, user_id)
+    response = app.call(env)
+
+    code, headers = response
+    expect(code).to eq 302
+    expect(headers['Location']).to eq('/')
+  end
 end

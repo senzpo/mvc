@@ -30,10 +30,10 @@ class ApplicationController
     send(action)
   end
 
-  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT)
+  def render(code: DEFAULT_HTTP_CODE, headers: {}, body: nil, layout: DEFAULT_LAYOUT, template: nil)
     return [code, headers, [body]] unless body.nil?
 
-    body = prepare_body(layout, template_path(action))
+    body = prepare_body(layout, template || template_path(action))
     [code, headers, [body]]
   end
 
@@ -50,6 +50,10 @@ class ApplicationController
       when 'application/json' then JSON.parse(request.body.read).transform_keys(&:to_sym)
       else request.params.transform_keys(&:to_sym)
       end
+  end
+
+  def render_partial(name, options = {}, &block)
+    Slim::Template.new("#{name}.slim", options).render(self, &block)
   end
 
   private

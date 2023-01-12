@@ -4,6 +4,8 @@ module Api
   module V1
     # Provides handlers for managing projects via API v1
     class ProjectsController < ActionController
+      before_action :authenticate_user!
+
       def index
         projects = ProjectRepository.all
 
@@ -11,7 +13,7 @@ module Api
       end
 
       def create
-        contract = ProjectContract.new.call(request_params)
+        contract = ProjectContract.new.call(request_params.merge(user_id: current_user.id))
         if contract.failure?
           return render(
             code: 422, body: contract.errors.to_h.to_json,
@@ -24,7 +26,7 @@ module Api
       end
 
       def update
-        contract = ProjectContract.new.call(request_params)
+        contract = ProjectContract.new.call(request_params.merge(user_id: current_user.id))
         if contract.success?
           ProjectRepository.update(params[:id], contract.to_h)
 
@@ -45,7 +47,7 @@ module Api
       end
 
       def show
-        project = ProjectRepository.find(params[:id])
+        project = ProjectRepository.find(id: params[:id], user_id: current_user.id)
 
         render body: project.to_h.to_json, headers: { 'content-type' => 'application/json' }
       rescue ApplicationRepository::NotFoundRecord

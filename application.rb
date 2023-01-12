@@ -13,6 +13,10 @@ class Application
     def self.test?
       env == 'test'
     end
+
+    def self.secrets
+      YAML.load_file('config/secrets.yml')[Application::Config.env]
+    end
   end
 
   def initialize
@@ -22,7 +26,7 @@ class Application
   def self.launch
     Rack::Builder.new do |builder|
       builder.use Rack::Session::Cookie, domain: 'localhost', path: '/', expire_after: 3600 * 24,
-                                         secret: SecureRandom.hex(64)
+                                         secret: Application::Config.secrets['session_cookie']
       builder.run Application.new
     end
   end

@@ -17,3 +17,10 @@ RSpec/ExampleLength:
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+Metrics/AbcSize:
+  Max: 20
+
+Naming/PredicateName:
+  AllowedMethods:
+    - 'has_many'

@@ -35,7 +35,7 @@ module Services
       def delete_assigned_projects(user)
         projects = ProjectRepository.all(user_id: user.id)
         projects.each do |project|
-          ProjectRepository.delete(project.id)
+          Services::Projects::Delete.new.call(project)
         end
         Success(user)
       end

@@ -31,8 +31,25 @@ namespace :db do
   desc 'Rollback database'
   task :rollback do
     Sequel.extension :migration
-    steps = ENV['STEPS'].to_i || 1
+    steps = ENV['STEPS'].nil? ? 1 : ENV['STEPS'].to_i
     Sequel::Migrator.run(ApplicationRepository::DB, 'db/migrations', relative: steps * -1)
+  end
+end
+
+namespace :app do
+  desc 'Run controllers test'
+  task :console do
+    require 'rubygems'
+    require 'bundler'
+    require 'securerandom'
+    require 'irb'
+
+    Bundler.require
+
+    require './application'
+
+    ARGV.clear
+    IRB.start
   end
 end
 
