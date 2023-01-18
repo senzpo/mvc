@@ -16,16 +16,34 @@ class ApplicationSerializer
     end
   end
 
-  def initialize(entity)
-    @entity = entity
+  def initialize(object)
+    object.instance_of?(Array) ? @entities = object : @entity = object
   end
 
   def to_h
+    data = @entities ? data_for_array : data_for_single_entity
+    { data: data }
+  end
+
+  def data_for_array
+    result_data = []
+    @entities.each do |entity|
+      @entity = entity
+      result_attributes = {}
+      attributes.each do |attr|
+        result_attributes[attr] = get_attribute(attr)
+      end
+      result_data.push({ type: type, id: id, attributes: result_attributes })
+    end
+    result_data
+  end
+
+  def data_for_single_entity
     result_attributes = {}
     attributes.each do |attr|
       result_attributes[attr] = get_attribute(attr)
     end
-    { data: { type: type, id: id, attributes: result_attributes } }
+    { type: type, id: id, attributes: result_attributes }
   end
 
   def get_attribute(attr)
