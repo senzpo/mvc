@@ -3,14 +3,15 @@
 module Api
   module V1
     module Projects
+      # Show serializer for project entity
       class ShowSerializer < ApplicationSerializer
-        # type 'Projects'
+        type 'projects'
 
         def id
-          'UUID'
+          SecureRandom.uuid
         end
 
-        attributes :id, :title, :description
+        attributes :title, :description
       end
     end
   end

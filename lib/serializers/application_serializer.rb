@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# All app serializers must be subclasses of ApplicationSerializer
 class ApplicationSerializer
   attr_reader :entity
 
@@ -9,32 +10,39 @@ class ApplicationSerializer
     end
   end
 
+  def self.type(entity_type)
+    define_method :type do
+      entity_type
+    end
+  end
+
   def initialize(entity)
     @entity = entity
   end
 
-
   def to_h
-    result = {}
+    result_attributes = {}
     attributes.each do |attr|
-      result[attr] =
-        if respond_to?(attr)
-          self.send(attr)
-        elsif entity.respond_to?(attr)
-          entity.send(attr)
-        else
-          raise NoMethodError, "Undefined serialize key #{attr}"
-        end
+      result_attributes[attr] = get_attribute(attr)
     end
+    { data: { type: type, id: id, attributes: result_attributes } }
+  end
 
-    def type
-      entity.class.to_s
+  def get_attribute(attr)
+    if respond_to?(attr)
+      send(attr)
+    elsif entity.respond_to?(attr)
+      entity.send(attr)
+    else
+      raise NoMethodError, "Undefined serialize key #{attr}"
     end
+  end
 
-    def id
-      entity.id
-    end
+  def type
+    entity.class.to_s
+  end
 
-    result
+  def id
+    entity.id.to_s
   end
 end
