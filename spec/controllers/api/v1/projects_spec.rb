@@ -126,8 +126,14 @@ RSpec.describe 'Api::V1::ProjectsController' do
     login(env, user_id)
     response = app.call(env)
 
-    code, = response
+    code, _, body = response
+    content = JSON.parse(body.first)
+
     expect(code).to eq 200
+    expect(content['data']['id']).not_to be_nil
+    expect(content['data']['type']).to eq 'projects'
+    expect(content['data']['attributes']['description']).to eq project_attributes[:description]
+    expect(content['data']['attributes']['title']).to eq project_attributes[:title]
   end
 
   it 'failed to show with 404' do
