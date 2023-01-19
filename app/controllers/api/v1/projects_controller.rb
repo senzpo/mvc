@@ -9,7 +9,8 @@ module Api
       def index
         projects = ProjectRepository.all
 
-        render body: projects.map(&:to_h).to_json, headers: { 'content-type' => 'application/json' }
+        json = Api::V1::Projects::BaseSerializer.new(projects).to_h.to_json
+        render body: json, headers: { 'content-type' => 'application/json' }
       end
 
       def create
@@ -49,7 +50,7 @@ module Api
       def show
         project = ProjectRepository.find(id: params[:id], user_id: current_user.id)
 
-        json = Api::V1::Projects::ShowSerializer.new(project).to_h.to_json
+        json = Api::V1::Projects::BaseSerializer.new(project).to_h.to_json
         render body: json, headers: { 'content-type' => 'application/json' }
       rescue ApplicationRepository::NotFoundRecord
         head 404

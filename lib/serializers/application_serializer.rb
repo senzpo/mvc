@@ -57,7 +57,7 @@ class ApplicationSerializer
   end
 
   def type
-    entity.class.to_s
+    entity.class.to_s.downcase
   end
 
   def id

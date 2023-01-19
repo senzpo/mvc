@@ -10,12 +10,28 @@ RSpec.describe 'Api::V1::ProjectsController' do
   let(:invalid_project_attributes) { { title: 'T', description: nil } }
 
   it 'index' do
+    ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
+    project = ApplicationRepository::DB[:projects].where(project_attributes).first
     env = Rack::MockRequest.env_for('/api/v1/projects', 'REQUEST_METHOD' => 'GET')
     login(env, user_id)
     response = app.call(env)
 
-    code, = response
+    code, _, body = response
+    content = JSON.parse(body.first)
+
     expect(code).to eq 200
+    expect(content).to eq(
+      {
+        'data' => [{
+          'id' => project[:id].to_s,
+          'type' => 'project',
+          'attributes' => {
+            'title' => project[:title],
+            'description' => project[:description]
+          }
+        }]
+      }
+    )
   end
 
   it 'create' do
@@ -130,10 +146,19 @@ RSpec.describe 'Api::V1::ProjectsController' do
     content = JSON.parse(body.first)
 
     expect(code).to eq 200
-    expect(content['data']['id']).not_to be_nil
-    expect(content['data']['type']).to eq 'projects'
-    expect(content['data']['attributes']['description']).to eq project_attributes[:description]
-    expect(content['data']['attributes']['title']).to eq project_attributes[:title]
+    expect(content).to eq(
+      {
+        'data' => {
+          'id' => project[:id].to_s,
+          'type' => 'project',
+          'attributes' => {
+            'title' => project[:title],
+            'description' => project[:description]
+          }
+
+        }
+      }
+    )
   end
 
   it 'failed to show with 404' do
