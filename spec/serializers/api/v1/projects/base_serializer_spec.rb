@@ -27,6 +27,32 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
     )
   end
 
+  it 'serialize with custom id, type, field' do
+    custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
+      type :some_custom_type
+      id do |object|
+        object.id.to_s * 2
+      end
+
+      def description
+        'Custom description'
+      end
+    end
+    result = custom_serializer.new(project).serialize
+    expect(result).to eq(
+      {
+        data: {
+          attributes: {
+            description: 'Custom description',
+            title: project.title
+          },
+          id: "#{project.id}#{project.id}",
+          type: 'some_custom_type'
+        }
+      }
+    )
+  end
+
   it 'serialize collection by default' do
     result = Api::V1::Projects::BaseSerializer.new([project]).serialize
     expect(result).to eq(

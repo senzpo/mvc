@@ -11,7 +11,15 @@ class ApplicationSerializer
 
     def type(type)
       define_method :type do
-        type
+        type.to_s
+      end
+    end
+
+    def id
+      raise ArgumentError, 'No block given' unless block_given?
+
+      define_method :id do
+        yield data
       end
     end
   end
