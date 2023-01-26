@@ -22,6 +22,14 @@ class ApplicationSerializer
         yield data
       end
     end
+
+    def links
+      raise ArgumentError, 'No block given' unless block_given?
+
+      define_method :links do
+        yield data
+      end
+    end
   end
 
   attr_reader :data
@@ -43,7 +51,10 @@ class ApplicationSerializer
     end
     data_type = respond_to?(:type) ? type : default_type
     data_id = respond_to?(:id) ? id : default_id
-    { type: data_type, id: data_id, attributes: result_attributes }
+
+    result = { type: data_type, id: data_id, attributes: result_attributes }
+    result[:links] = links if respond_to?(:links)
+    result
   end
 
   private

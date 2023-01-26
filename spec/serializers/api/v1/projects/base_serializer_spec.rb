@@ -53,6 +53,34 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
     )
   end
 
+  it 'serialize with links' do
+    custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
+      links do |object|
+        {
+          self: "/api/v1/projects/#{object.id}",
+          related: "/api/v1/projects/#{object.id}/steps"
+        }
+      end
+    end
+    result = custom_serializer.new(project).serialize
+    expect(result).to eq(
+      {
+        data: {
+          attributes: {
+            description: project.description,
+            title: project.title
+          },
+          links: {
+            self: "/api/v1/projects/#{project.id}",
+            related: "/api/v1/projects/#{project.id}/steps"
+          },
+          id: project.id.to_s,
+          type: 'project'
+        }
+      }
+    )
+  end
+
   it 'serialize collection by default' do
     result = Api::V1::Projects::BaseSerializer.new([project]).serialize
     expect(result).to eq(
