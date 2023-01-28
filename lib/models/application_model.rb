@@ -14,6 +14,6 @@ class ApplicationModel < Dry::Struct
 
   def self.belongs_to(relation, class_name:)
     attribute "#{relation}_id".to_sym, Types::Coercible::Integer.meta(info: "#{class_name} ID")
-    attribute? relation
+    # attribute? relation, UserType
   end
 end

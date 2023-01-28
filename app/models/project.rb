@@ -6,4 +6,5 @@ class Project < ApplicationModel
   attribute? :description, Types::Coercible::String.optional
 
   belongs_to :user, class_name: 'User'
+  attr_accessor :user
 end

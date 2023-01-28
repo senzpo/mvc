@@ -30,12 +30,21 @@ class ApplicationSerializer
         yield data
       end
     end
+
+    def has_one(relation)
+      raise ArgumentError, 'No block given' unless block_given?
+
+      define_method relation do
+        yield data
+      end
+    end
   end
 
   attr_reader :data
 
-  def initialize(data)
+  def initialize(data, include: [])
     @data = data
+    @include = include
   end
 
   def serialize
@@ -46,14 +55,25 @@ class ApplicationSerializer
   def to_h
     raise NoMethodError if data.is_a?(Enumerable)
 
-    result_attributes = attributes.each_with_object({}) do |attr, acc|
-      acc[attr] = get_attribute(attr)
-    end
     data_type = respond_to?(:type) ? type : default_type
     data_id = respond_to?(:id) ? id : default_id
 
-    result = { type: data_type, id: data_id, attributes: result_attributes }
+    result = { type: data_type, id: data_id }
+
+    if respond_to?(:attributes)
+      result_attributes = attributes.each_with_object({}) do |attr, acc|
+        acc[attr] = get_attribute(attr)
+      end
+      result[:attributes] = result_attributes
+    end
     result[:links] = links if respond_to?(:links)
+
+    result[:relationships] = {} unless @include.empty?
+    @include.each do |include|
+      raise NoMethodError unless respond_to?(include)
+      result[:relationships][include] = send(include)
+    end
+
     result
   end
 

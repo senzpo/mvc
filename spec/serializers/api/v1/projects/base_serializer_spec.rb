@@ -5,10 +5,13 @@ require 'spec_helper'
 RSpec.describe 'Api::V1::Projects::BaseSerializer' do
   let(:user_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
   let(:user_id) { ApplicationRepository::DB[:users].insert(user_attributes) }
+  let(:user) { UserRepository.find(id: user_id) }
   let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
   let(:project) do
     id = ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
-    ProjectRepository.find(id: id)
+    p = ProjectRepository.find(id: user_id)
+    p.user = user
+    p
   end
 
   it 'serialize by default' do
@@ -76,6 +79,38 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
           },
           id: project.id.to_s,
           type: 'project'
+        }
+      }
+    )
+  end
+
+  it 'serialize with relationships' do
+    user_serializer = Class.new(ApplicationSerializer) do
+    end
+    custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
+      has_one :user do |object|
+        user_serializer.new(object.user).serialize
+      end
+    end
+    result = custom_serializer.new(project, include: [:user]).serialize
+    expect(result).to eq(
+      {
+        data: {
+          attributes: {
+            description: project.description,
+            title: project.title
+          },
+          id: project.id.to_s,
+          type: 'project',
+          relationships: {
+            user: {
+              data: {
+                id: user_id.to_s,
+                type: 'user'
+              }
+            }
+          },
+          included{}
         }
       }
     )

@@ -15,6 +15,13 @@ class UserRepository < ApplicationRepository
     end
   end
 
+  def self.find(params)
+    p = ApplicationRepository::DB[:users].where(params).first
+    raise NotFoundRecord if p.nil?
+
+    User.new(p)
+  end
+
   def self.create(user_params)
     id = ApplicationRepository::DB[:users].insert(user_params)
 
