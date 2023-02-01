@@ -86,13 +86,14 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
 
   it 'serialize with relationships' do
     user_serializer = Class.new(ApplicationSerializer) do
+      attributes :email
     end
     custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
-      has_one :user do |object|
+      has_one :author do |object|
         user_serializer.new(object.user).serialize
       end
     end
-    result = custom_serializer.new(project, include: [:user]).serialize
+    result = custom_serializer.new(project, include: [:author]).serialize
     expect(result).to eq(
       {
         data: {
@@ -103,14 +104,22 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
           id: project.id.to_s,
           type: 'project',
           relationships: {
-            user: {
+            author: {
               data: {
                 id: user_id.to_s,
                 type: 'user'
               }
             }
           },
-          included: {}
+          included: [
+            {
+              type: 'user',
+              id: user.id.to_s,
+              attributes: {
+                email: user.email
+              }
+            }
+          ]
         }
       }
     )

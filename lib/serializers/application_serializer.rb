@@ -69,9 +69,15 @@ class ApplicationSerializer
     result[:links] = links if respond_to?(:links)
 
     result[:relationships] = {} unless @include.empty?
+    result[:included] = [] unless @include.empty?
     @include.each do |include|
       raise NoMethodError unless respond_to?(include)
-      result[:relationships][include] = send(include)
+      included_entity = send(include)
+      result[:included] << included_entity[:data]
+
+      included_relationship = {}
+      included_relationship[:data] = included_entity[:data].slice(:id, :type)
+      result[:relationships][include] = included_relationship
     end
 
     result

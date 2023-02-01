@@ -3,6 +3,9 @@
 # Repository layer for Project
 class ProjectRepository < ApplicationRepository
   class ProjectPresenter < ApplicationPresenter
+    def author
+      UserRepository.find(id: user_id)
+    end
   end
 
   def self.all(params = {}, includes: [])
