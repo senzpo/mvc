@@ -110,7 +110,7 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
               }
             }
           },
-          included{}
+          included: {}
         }
       }
     )
