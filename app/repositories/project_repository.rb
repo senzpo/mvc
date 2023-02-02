@@ -2,8 +2,15 @@
 
 # Repository layer for Project
 class ProjectRepository < ApplicationRepository
+  # Presenter for Project
+  class ProjectPresenter < ApplicationPresenter
+    def author
+      UserRepository.find(id: user_id)
+    end
+  end
+
   def self.all(params = {})
-    ApplicationRepository::DB[:projects].where(params).map { |p| Project.new(p) }
+    ApplicationRepository::DB[:projects].where(params).map { |p| Project.new(p) }.map { |p| ProjectPresenter.new(p) }
   end
 
   def self.find(params)
