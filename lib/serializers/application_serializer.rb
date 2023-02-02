@@ -55,23 +55,23 @@ class ApplicationSerializer
   def to_h
     raise NoMethodError if data.is_a?(Enumerable)
 
-    data_type = respond_to?(:type) ? type : default_type
-    data_id = respond_to?(:id) ? id : default_id
+    result = {}
+    add_type(result)
+    add_id(result)
+    add_attributes(result)
+    add_links(result)
+    add_relatioship(result)
+    result
+  end
 
-    result = { type: data_type, id: data_id }
+  private
 
-    if respond_to?(:attributes)
-      result_attributes = attributes.each_with_object({}) do |attr, acc|
-        acc[attr] = get_attribute(attr)
-      end
-      result[:attributes] = result_attributes
-    end
-    result[:links] = links if respond_to?(:links)
-
+  def add_relatioship(result)
     result[:relationships] = {} unless @include.empty?
     result[:included] = [] unless @include.empty?
     @include.each do |include|
       raise NoMethodError unless respond_to?(include)
+
       included_entity = send(include)
       result[:included] << included_entity[:data]
 
@@ -79,11 +79,28 @@ class ApplicationSerializer
       included_relationship[:data] = included_entity[:data].slice(:id, :type)
       result[:relationships][include] = included_relationship
     end
-
-    result
   end
 
-  private
+  def add_links(result)
+    result[:links] = links if respond_to?(:links)
+  end
+
+  def add_type(result)
+    result[:type] = respond_to?(:type) ? type : default_type
+  end
+
+  def add_id(result)
+    result[:id] = respond_to?(:id) ? id : default_id
+  end
+
+  def add_attributes(result)
+    return unless respond_to?(:attributes)
+
+    result_attributes = attributes.each_with_object({}) do |attr, acc|
+      acc[attr] = get_attribute(attr)
+    end
+    result[:attributes] = result_attributes
+  end
 
   def default_type
     data.class.to_s.downcase

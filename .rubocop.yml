@@ -24,3 +24,4 @@ Metrics/AbcSize:
 Naming/PredicateName:
   AllowedMethods:
     - 'has_many'
+    - 'has_one'

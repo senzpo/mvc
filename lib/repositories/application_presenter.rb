@@ -4,7 +4,7 @@
 class ApplicationPresenter
   def initialize(object)
     @object = object
-    object.attributes.keys.each do |attr|
+    object.attributes.each_key do |attr|
       define_singleton_method attr do
         object.send(attr)
       end

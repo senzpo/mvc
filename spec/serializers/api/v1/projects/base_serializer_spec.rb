@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
   let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
   let(:project) do
     id = ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
-    p = ProjectRepository.find(id: user_id)
+    p = ProjectRepository.find(id: id)
     p.user = user
     p
   end
