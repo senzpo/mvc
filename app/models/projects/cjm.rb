@@ -7,9 +7,6 @@ module Projects
     attribute :scenario, Types::Coercible::String
     attribute :opportunities, Types::Coercible::String
     attribute :expectations, Types::Coercible::String
-
     attribute? :notes, Types::Coercible::String.optional
-
-    belongs_to :project, class_name: 'Project'
   end
 end

@@ -5,14 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Api::V1::Projects::BaseSerializer' do
   let(:user_attributes) { { email: 'some@example.com', password_hash: 'secret', salt: 'aaa' } }
   let(:user_id) { ApplicationRepository::DB[:users].insert(user_attributes) }
+  let(:project_id) { ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id)) }
   let(:user) { UserRepository.find(id: user_id) }
   let(:project_attributes) { { title: 'Test project', description: 'My very best description' } }
-  let(:project) do
-    id = ApplicationRepository::DB[:projects].insert(project_attributes.merge(user_id: user_id))
-    p = ProjectRepository.find(id: id)
-    p.user = user
-    p
-  end
+  let(:project) { ProjectRepository.find(id: project_id) }
 
   it 'serialize by default' do
     result = Api::V1::Projects::BaseSerializer.new(project).serialize
@@ -90,7 +86,7 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
     end
     custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
       has_one :author do |object|
-        user_serializer.new(object.user).serialize
+        user_serializer.new(object.author).serialize
       end
     end
     result = custom_serializer.new(project, include: [:author]).serialize

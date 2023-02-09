@@ -3,27 +3,29 @@
 # Repository layer for Project
 class ProjectRepository < ApplicationRepository
   # Presenter for Project
-  class ProjectPresenter < ApplicationPresenter
+  class ProjectRelation < ApplicationRelation
+    wrap :project
+
     def author
-      UserRepository.find(id: user_id)
+      UserRepository.find(id: attributes[:user_id])
     end
   end
 
   def self.all(params = {})
-    ApplicationRepository::DB[:projects].where(params).map { |p| Project.new(p) }.map { |p| ProjectPresenter.new(p) }
+    ApplicationRepository::DB[:projects].where(params).map { |p| ProjectRelation.new(p) }
   end
 
   def self.find(params)
     p = ApplicationRepository::DB[:projects].where(params).first
     raise NotFoundRecord if p.nil?
 
-    Project.new(p)
+    ProjectRelation.new(p)
   end
 
   def self.create(project_params)
     id = ApplicationRepository::DB[:projects].insert(project_params)
 
-    Project.new(project_params.merge(id: id))
+    ProjectRelation.new(project_params.merge(id: id))
   end
 
   def self.update(id, project_params)

@@ -5,7 +5,6 @@ class ProjectContract < ApplicationContract
   params do
     required(:title).filled(:string)
     required(:description).maybe(:string)
-    required(:user_id).filled(:integer)
   end
 
   rule(:title) do

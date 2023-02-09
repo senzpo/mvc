@@ -6,6 +6,10 @@ module Api
       # Show serializer for project entity
       class BaseSerializer < ApplicationSerializer
         attributes :title, :description
+
+        has_one :author do |object|
+          ApplicationSerializer.new(object.author).serialize
+        end
       end
     end
   end

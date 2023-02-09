@@ -5,6 +5,6 @@ class Project < ApplicationModel
   attribute :title, Types::Coercible::String.constrained(min_size: 3)
   attribute? :description, Types::Coercible::String.optional
 
-  belongs_to :user, class_name: 'User'
-  attr_accessor :user
+  # belongs_to :user, class_name: 'User'
+  # attr_accessor :user
 end

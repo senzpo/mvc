@@ -70,8 +70,9 @@ class ApplicationSerializer
     result[:relationships] = {} unless @include.empty?
     result[:included] = [] unless @include.empty?
     @include.each do |include|
-      raise NoMethodError unless respond_to?(include)
+      raise(NoMethodError, "Undefined #{include} include") unless respond_to?(include)
 
+      # binding.pry
       included_entity = send(include)
       result[:included] << included_entity[:data]
 
