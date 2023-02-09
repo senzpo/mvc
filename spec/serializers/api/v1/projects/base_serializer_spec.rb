@@ -162,6 +162,70 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
     )
   end
 
+  it 'serialize nested' do
+    user_serializer = Class.new(ApplicationSerializer) do
+      attributes :email
+    end
+    custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
+      has_one :author do |object|
+        user_serializer.new(object.author).serialize_data
+      end
+    end
+    result = custom_serializer.new(project, include: 'author.projects').serialize
+    expect(result).to eq(
+      {
+        data: {
+          attributes: {
+            description: project.description,
+            title: project.title
+          },
+          id: project.id.to_s,
+          type: 'project',
+          relationships: {
+            author: {
+              data: {
+                id: user_id.to_s,
+                type: 'user'
+              }
+            }
+          }
+        },
+        included: [
+          {
+            type: 'user',
+            id: user.id.to_s,
+            attributes: {
+              email: user.email
+            },
+            relationships: {
+              projects: [
+                {
+                  id: project.id.to_s,
+                  type: 'project'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    )
+  end
+
+  it 'serialize with fields' do
+    result = Api::V1::Projects::BaseSerializer.new(project, fields: { project: 'title' }).serialize
+    expect(result).to eq(
+      {
+        data: {
+          attributes: {
+            title: project.title
+          },
+          id: project.id.to_s,
+          type: 'project'
+        }
+      }
+    )
+  end
+
   it 'serialize collection by default' do
     result = Api::V1::Projects::BaseSerializer.new([project]).serialize
     expect(result).to eq(
