@@ -48,11 +48,23 @@ class ApplicationSerializer
   end
 
   def serialize
-    result = data.is_a?(Enumerable) ? data.map { |e| self.class.new(e).to_h } : to_h
-    { data: result }
+    result = {}
+    if data.is_a?(Enumerable)
+      result[:data] = data.map { |e| self.class.new(e, include: @include).serialize_data }
+      included = data.flat_map { |e| self.class.new(e, include: @include).included_serialization }.compact
+      result[:included] = included if included.any?
+    else
+      result[:data] = data_serialization
+      result[:included] = included_serialization if included_serialization
+    end
+    result
   end
 
-  def to_h
+  def serialize_data
+    data_serialization
+  end
+
+  def data_serialization
     raise NoMethodError if data.is_a?(Enumerable)
 
     result = {}
@@ -64,20 +76,26 @@ class ApplicationSerializer
     result
   end
 
+  def included_serialization
+    return nil if @include.empty?
+
+    @include.map do |include|
+      raise(NoMethodError, "Undefined #{include} include") unless respond_to?(include)
+
+      send(include)
+    end
+  end
+
   private
 
   def add_relatioship(result)
     result[:relationships] = {} unless @include.empty?
-    result[:included] = [] unless @include.empty?
     @include.each do |include|
       raise(NoMethodError, "Undefined #{include} include") unless respond_to?(include)
 
-      # binding.pry
       included_entity = send(include)
-      result[:included] << included_entity[:data]
-
       included_relationship = {}
-      included_relationship[:data] = included_entity[:data].slice(:id, :type)
+      included_relationship[:data] = included_entity.slice(:id, :type)
       result[:relationships][include] = included_relationship
     end
   end

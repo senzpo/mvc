@@ -86,7 +86,7 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
     end
     custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
       has_one :author do |object|
-        user_serializer.new(object.author).serialize
+        user_serializer.new(object.author).serialize_data
       end
     end
     result = custom_serializer.new(project, include: [:author]).serialize
@@ -106,17 +106,58 @@ RSpec.describe 'Api::V1::Projects::BaseSerializer' do
                 type: 'user'
               }
             }
+          }
+        },
+        included: [
+          {
+            type: 'user',
+            id: user.id.to_s,
+            attributes: {
+              email: user.email
+            }
+          }
+        ]
+      }
+    )
+  end
+
+  it 'serialize collection with relationships' do
+    user_serializer = Class.new(ApplicationSerializer) do
+      attributes :email
+    end
+    custom_serializer = Class.new(Api::V1::Projects::BaseSerializer) do
+      has_one :author do |object|
+        user_serializer.new(object.author).serialize_data
+      end
+    end
+    result = custom_serializer.new([project], include: [:author]).serialize
+    expect(result).to eq(
+      {
+        data: [{
+          attributes: {
+            description: project.description,
+            title: project.title
           },
-          included: [
-            {
-              type: 'user',
-              id: user.id.to_s,
-              attributes: {
-                email: user.email
+          id: project.id.to_s,
+          type: 'project',
+          relationships: {
+            author: {
+              data: {
+                id: user_id.to_s,
+                type: 'user'
               }
             }
-          ]
-        }
+          }
+        }],
+        included: [
+          {
+            type: 'user',
+            id: user.id.to_s,
+            attributes: {
+              email: user.email
+            }
+          }
+        ]
       }
     )
   end
