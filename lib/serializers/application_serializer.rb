@@ -42,9 +42,10 @@ class ApplicationSerializer
 
   attr_reader :data
 
-  def initialize(data, include: [])
+  def initialize(data, include: [], fields: {})
     @data = data
     @include = include
+    @fields = fields
   end
 
   def serialize
@@ -70,7 +71,7 @@ class ApplicationSerializer
     result = {}
     add_type(result)
     add_id(result)
-    add_attributes(result)
+    @fields.empty? ? add_attributes(result) : add_fields(result)
     add_links(result)
     add_relatioship(result)
     result
@@ -119,6 +120,14 @@ class ApplicationSerializer
       acc[attr] = get_attribute(attr)
     end
     result[:attributes] = result_attributes
+  end
+
+  def add_fields(result)
+    self_fields = @fields.slice(default_type.to_sym).values.map(&:to_sym)
+    result_fields = self_fields.each_with_object({}) do |field, acc|
+      acc[field] = get_attribute(field)
+    end
+    result[:attributes] = result_fields
   end
 
   def default_type
